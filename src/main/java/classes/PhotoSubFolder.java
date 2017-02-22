@@ -1,5 +1,6 @@
 package classes;
 
+import enums.FileCategory;
 import enums.FileType;
 import enums.Month;
 
@@ -17,6 +18,8 @@ public class PhotoSubFolder {
     private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
 
     private String newSubFolderName = null;
+    private int newPhotoFileSequenceNumber = 1;
+    private int newVideoFileSequenceNumber = 1;
 
     public PhotoSubFolder(String folderName, String subFolderName) {
         this.folderName = folderName;
@@ -62,7 +65,18 @@ public class PhotoSubFolder {
         File subFolder = new File(folderName.concat("\\").concat(subFolderName));
         File[] files = subFolder.listFiles();
         for (File file : files) {
-            photoFiles.add(new PhotoFile(file.getName()));
+            PhotoFile photoFile = new PhotoFile(file.getName());
+
+            switch (photoFile.getFileType().getFileCategory()) {
+                case PICTURE: break;
+                case VIDEO: break;
+            }
+
+            if (newSubFolderName != null &
+                    photoFile.getFileType().getFileCategory() == FileCategory.PICTURE){
+                photoFile.setNewFilename(newSubFolderName, newPhotoFileSequenceNumber++);
+            }
+            photoFiles.add(photoFile);
         }
     }
 
