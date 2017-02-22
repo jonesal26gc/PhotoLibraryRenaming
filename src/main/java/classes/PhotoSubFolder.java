@@ -1,6 +1,8 @@
 package classes;
 
 import enums.FileType;
+import enums.Month;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,15 +14,33 @@ public class PhotoSubFolder {
     private boolean OriginalSubFolderName = false;
     private boolean NewSubFolderName = false;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
-    private Map<FileType,Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
+    private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
+
+    private String newSubFolderName = null;
 
     public PhotoSubFolder(String folderName, String subFolderName) {
         this.folderName = folderName;
         this.subFolderName = subFolderName;
         checkThatItIsFolder();
         setSubFolderNameFormatIndicators();
+        if (isOriginalSubFolderName()) {
+            formatNewSubFolderName();
+        }
         retrieveListOfPhotoFiles();
         summarisePhotoFilesByFileType();
+    }
+
+    private void formatNewSubFolderName() {
+        String newPrefix = subFolderName.substring(0, 4)
+                + subFolderName.substring(4, 5)
+                + subFolderName.substring(5, 7)
+                + "-"
+                + subFolderName.substring(8, 10)
+                + " "
+                + Month.findAbbreviatedName(subFolderName.substring(5, 7))
+                + subFolderName.substring(2, 4)
+                + " ";
+        newSubFolderName = newPrefix.concat(subFolderName.substring(21));
     }
 
     private void checkThatItIsFolder() {
@@ -49,9 +69,9 @@ public class PhotoSubFolder {
     private void summarisePhotoFilesByFileType() {
         for (PhotoFile photoFile : photoFiles) {
             if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
-                summaryOfFileTypes.put(photoFile.getFileType(),summaryOfFileTypes.get(photoFile.getFileType())+1);
+                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
             } else {
-                summaryOfFileTypes.put(photoFile.getFileType(),1);
+                summaryOfFileTypes.put(photoFile.getFileType(), 1);
             }
         }
     }
@@ -74,6 +94,10 @@ public class PhotoSubFolder {
 
     public Map<FileType, Integer> getSummaryOfFileTypes() {
         return summaryOfFileTypes;
+    }
+
+    public String getNewSubFolderName() {
+        return newSubFolderName;
     }
 
     @Override

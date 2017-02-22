@@ -29,7 +29,7 @@ public class PrimaryPhotoLibraryShould {
         for (PhotoSubFolder photoSubFolder : primaryPhotoFolder.getPhotoSubFolders()) {
             System.out.println(photoSubFolder.getSubFolderName());
             for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()){
-                System.out.println(photoFile.getFilename() + " of type " + photoFile.getFileType().name());
+                System.out.println(photoFile.getFilename());
             }
             for (Map.Entry<FileType,Integer> i : photoSubFolder.getSummaryOfFileTypes().entrySet()){
                 System.out.println(i.getKey().name() + "=" + i.getValue() );
@@ -45,11 +45,10 @@ public class PrimaryPhotoLibraryShould {
         for (PhotoSubFolder photoSubFolder : primaryPhotoFolder.getPhotoSubFolders()) {
             if (photoSubFolder.isNewSubFolderName()) n++;
             if (photoSubFolder.isOriginalSubFolderName()) o++;
+            System.out.println(photoSubFolder.getNewSubFolderName());
         }
+        System.out.println("");
         System.out.println(o + " original subfolder names encountered.");
         System.out.println(n + " new subfolder names encountered.");
-
-
-
     }
 }
