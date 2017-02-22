@@ -3,7 +3,7 @@ package classes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SubFolderCheckerForCorrectName {
+public class CheckerForNewSubFolderName {
     private Pattern pattern;
     private Matcher matcher;
     private static final String FILENAME_PATTERN_ALREADY_SET =
@@ -11,7 +11,7 @@ public class SubFolderCheckerForCorrectName {
                     "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|xxx)([0-9][0-9]|xx) " +
                     ".*";
 
-    public SubFolderCheckerForCorrectName() {
+    public CheckerForNewSubFolderName() {
         pattern = Pattern.compile(FILENAME_PATTERN_ALREADY_SET);
     }
 

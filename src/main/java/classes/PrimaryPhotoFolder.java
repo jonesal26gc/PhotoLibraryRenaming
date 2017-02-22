@@ -31,7 +31,7 @@ public class PrimaryPhotoFolder {
         File[] files = subFolder.listFiles();
 
         for (File file : files) {
-            photoSubFolders.add(new PhotoSubFolder(folderName + "\\" + file.getName()));
+            photoSubFolders.add(new PhotoSubFolder(folderName, file.getName()));
         }
     }
 
