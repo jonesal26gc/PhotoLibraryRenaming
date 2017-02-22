@@ -54,4 +54,12 @@ public class PhotoSubFolder {
     public Map<FileType, Integer> getSummaryOfFileTypes() {
         return summaryOfFileTypes;
     }
+
+    @Override
+    public String toString() {
+        return "PhotoSubFolder{" +
+                "subFolderName='" + subFolderName + '\'' +
+                ", summaryOfFileTypes=" + summaryOfFileTypes +
+                '}';
+    }
 }

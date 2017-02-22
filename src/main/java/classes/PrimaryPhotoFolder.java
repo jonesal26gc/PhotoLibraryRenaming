@@ -37,11 +37,11 @@ public class PrimaryPhotoFolder {
 
     private void summarisePhotoFilesByFileType() {
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
-            for (Map.Entry<FileType, Integer> i : photoSubFolder.getSummaryOfFileTypes().entrySet()) {
-                if (summaryOfFileTypes.containsKey(i.getKey())) {
-                    summaryOfFileTypes.put(i.getKey(), summaryOfFileTypes.get(i.getKey()) + i.getValue());
+            for (Map.Entry<FileType, Integer> subTotal : photoSubFolder.getSummaryOfFileTypes().entrySet()) {
+                if (summaryOfFileTypes.containsKey(subTotal.getKey())) {
+                    summaryOfFileTypes.put(subTotal.getKey(), summaryOfFileTypes.get(subTotal.getKey()) + subTotal.getValue());
                 } else {
-                    summaryOfFileTypes.put(i.getKey(), 1);
+                    summaryOfFileTypes.put(subTotal.getKey(), 1);
                 }
             }
         }
@@ -57,5 +57,13 @@ public class PrimaryPhotoFolder {
 
     public Map<FileType, Integer> getSummaryOfFileTypes() {
         return summaryOfFileTypes;
+    }
+
+    @Override
+    public String toString() {
+        return "PrimaryPhotoFolder{" +
+                "folderName='" + folderName + '\'' +
+                ", summaryOfFileTypes=" + summaryOfFileTypes +
+                '}';
     }
 }
