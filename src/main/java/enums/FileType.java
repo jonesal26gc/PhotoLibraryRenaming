@@ -33,7 +33,7 @@ public enum FileType {
     }
 
     public static FileType findFileTypeFromFilename(String filename) {
-        String fileExtension = getFileExtension(filename);
+        String fileExtension = identifyFileExtension(filename);
         for (FileType fileType : FileType.values()) {
             if (fileType.name().equals(fileExtension)) {
                 return fileType;
@@ -42,7 +42,7 @@ public enum FileType {
         return FileType.XXX;
     }
 
-    private static String getFileExtension(String filename) {
+    private static String identifyFileExtension(String filename) {
         try {
             return filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
         } catch (Exception ex) {

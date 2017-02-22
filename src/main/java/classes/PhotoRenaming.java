@@ -96,7 +96,7 @@ public class PhotoRenaming {
         /***************************************************************
          * Check whether the sub-folder already has the new format.
          */
-        SubFolderNameAlreadySetCheck s = new SubFolderNameAlreadySetCheck();
+        SubFolderCheckerForCorrectName s = new SubFolderCheckerForCorrectName();
         return s.validate(subFolderName);
     }
 
@@ -129,7 +129,7 @@ public class PhotoRenaming {
          * Check the format of the original sub-folder name for suitability
          * prior to reformatting.
          */
-        SubFolderNameFormatCheck s = new SubFolderNameFormatCheck();
+        SubFolderCheckerForOriginalName s = new SubFolderCheckerForOriginalName();
         return s.validate(subFolderName);
     }
 
