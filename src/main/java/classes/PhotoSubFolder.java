@@ -5,9 +5,12 @@ import enums.FileType;
 import enums.Month;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PhotoSubFolder {
     private String folderName;
@@ -17,10 +20,12 @@ public class PhotoSubFolder {
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
     private Map<FileCategory, Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
     private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
+    private String newFolderName;
     private String newSubFolderName = null;
 
     public PhotoSubFolder(String folderName, String subFolderName) {
         this.folderName = folderName;
+        this.newFolderName = folderName.concat(" - New Revised Copy");
         this.subFolderName = subFolderName;
         checkThatItIsFolder();
         determineSubFolderNameFormatIndicators();
@@ -72,7 +77,7 @@ public class PhotoSubFolder {
             int newFileSequence = incrementCountOfFileCategory(photoFile.getFileType().getFileCategory());
             if (photoFile.getFileType().getFileCategory().isRenameFile() &
                     newSubFolderName != null) {
-                photoFile.setNewFilename(newSubFolderName, newFileSequence);
+                photoFile.setNewFilename(renamePhotoFile(photoFile.getFilename(),newFileSequence));
             }
             photoFiles.add(photoFile);
         }
@@ -96,6 +101,53 @@ public class PhotoSubFolder {
             countOfFileCategories.put(fileCategory, 1);
         }
         return countOfFileCategories.get(fileCategory);
+    }
+
+    public String renamePhotoFile(String filename, int newSequenceNumber) {
+        int commentStartPos = filename.indexOf('[');
+        int commentEndPos = filename.indexOf(']');
+
+        String commentField;
+        if (commentStartPos >= 0
+                & commentEndPos > 0
+                & commentStartPos < commentEndPos) {
+            commentField = " " + filename.substring(commentStartPos, commentEndPos + 1);
+        } else {
+            commentField = "";
+        }
+
+        return newSubFolderName.substring(0, 17)
+                .concat(String.format("#%03d ", newSequenceNumber))
+                .concat(newSubFolderName.substring(17))
+                .concat(commentField)
+                .concat(filename.substring(filename.indexOf('.')));
+    }
+
+    public void makeNewSubFolder() {
+        File folder = new File(newFolderName);
+        if (!folder.exists()) {
+            if (!folder.mkdir()) {
+                throw new RuntimeException("Error - unable to create new folder '" + newFolderName + "'.");
+            }
+        }
+        File subFolder = new File(newFolderName.concat("\\").concat(newSubFolderName));
+        if (!subFolder.mkdir()) {
+            throw new RuntimeException("Error - unable to create new sub-folder '" + newSubFolderName + "'.");
+        }
+    }
+
+    public void copyToNewSubFolder() {
+        for (PhotoFile photoFile : photoFiles) {
+            if (photoFile.getFileType().getFileCategory().isRetainFile()) {
+                try {
+                    File file = new File(folderName.concat("\\").concat(subFolderName).concat("\\").concat(photoFile.getFilename()));
+                    File newFile = new File(newFolderName.concat("\\").concat(newSubFolderName).concat("\\").concat(photoFile.getNewFilename()));
+                    Files.copy(file.toPath(), newFile.toPath(), REPLACE_EXISTING);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     public String getSubFolderName() {
