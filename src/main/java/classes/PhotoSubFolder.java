@@ -23,7 +23,7 @@ public class PhotoSubFolder {
         this.folderName = folderName;
         this.subFolderName = subFolderName;
         checkThatItIsFolder();
-        setSubFolderNameFormatIndicators();
+        determineSubFolderNameFormatIndicators();
         if (isOriginalSubFolderName()) {
             formatNewSubFolderName();
         }
@@ -38,7 +38,7 @@ public class PhotoSubFolder {
         }
     }
 
-    private void setSubFolderNameFormatIndicators() {
+    private void determineSubFolderNameFormatIndicators() {
         CheckerForOriginalSubFolderName checkerForOriginalSubFolderName = new CheckerForOriginalSubFolderName();
         OriginalSubFolderName = checkerForOriginalSubFolderName.validate(subFolderName);
 
@@ -71,10 +71,20 @@ public class PhotoSubFolder {
 
             int newFileSequence = incrementCountOfFileCategory(photoFile.getFileType().getFileCategory());
             if (photoFile.getFileType().getFileCategory().isRenameFile() &
-                    newSubFolderName != null ) {
+                    newSubFolderName != null) {
                 photoFile.setNewFilename(newSubFolderName, newFileSequence);
             }
             photoFiles.add(photoFile);
+        }
+    }
+
+    private void summarisePhotoFilesByFileType() {
+        for (PhotoFile photoFile : photoFiles) {
+            if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
+                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
+            } else {
+                summaryOfFileTypes.put(photoFile.getFileType(), 1);
+            }
         }
     }
 
@@ -86,16 +96,6 @@ public class PhotoSubFolder {
             countOfFileCategories.put(fileCategory, 1);
         }
         return countOfFileCategories.get(fileCategory);
-    }
-
-    private void summarisePhotoFilesByFileType() {
-        for (PhotoFile photoFile : photoFiles) {
-            if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
-                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
-            } else {
-                summaryOfFileTypes.put(photoFile.getFileType(), 1);
-            }
-        }
     }
 
     public String getSubFolderName() {
