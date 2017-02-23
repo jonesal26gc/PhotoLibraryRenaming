@@ -6,10 +6,11 @@ import java.io.File;
 public class PhotoFile {
     private String filename;
     private FileType fileType;
-    private String newFilename = null;
+    private String revisedFilename;
 
     public PhotoFile(String filename) {
         this.filename = filename;
+        this.revisedFilename = filename;
         checkThatItIsFile();
         this.fileType = FileType.findFileTypeFromFilename(filename);
     }
@@ -29,11 +30,11 @@ public class PhotoFile {
         return fileType;
     }
 
-    public String getNewFilename() {
-        return newFilename;
+    public String getRevisedFilename() {
+        return revisedFilename;
     }
 
-    public void setNewFilename(String newFilename) {
-        this.newFilename = newFilename;
+    public void setRevisedFilename(String revisedFilename) {
+        this.revisedFilename = revisedFilename;
     }
 }

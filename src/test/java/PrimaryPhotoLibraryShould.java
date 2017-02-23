@@ -31,8 +31,8 @@ public class PrimaryPhotoLibraryShould {
             System.out.println(photoSubFolder.getSubFolderName());
             for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
                 System.out.println(photoFile.getFilename());
-                if (photoFile.getNewFilename() != null) {
-                    System.out.println(photoFile.getNewFilename());
+                if (photoFile.getRevisedFilename() != null) {
+                    System.out.println(photoFile.getRevisedFilename());
                 }
             }
             for (Map.Entry<FileType, Integer> i : photoSubFolder.getSummaryOfFileTypes().entrySet()) {
@@ -47,9 +47,9 @@ public class PrimaryPhotoLibraryShould {
         // tally "old" style folders.
         int n = 0, o = 0;
         for (PhotoSubFolder photoSubFolder : primaryPhotoFolder.getPhotoSubFolders()) {
-            if (photoSubFolder.isNewSubFolderName()) n++;
-            if (photoSubFolder.isOriginalSubFolderName()) o++;
-            System.out.println(photoSubFolder.getNewSubFolderName());
+            if (photoSubFolder.isNewSubFolderNameFormat()) n++;
+            if (photoSubFolder.isOriginalSubFolderNameFormat()) o++;
+            System.out.println(photoSubFolder.getRevisedSubFolderName());
         }
         System.out.println("");
         System.out.println(o + " original subfolder names encountered.");
