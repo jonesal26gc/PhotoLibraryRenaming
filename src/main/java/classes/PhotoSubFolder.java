@@ -32,7 +32,7 @@ public class PhotoSubFolder {
         if (isOriginalSubFolderName()) {
             formatNewSubFolderName();
         }
-        retrieveListOfPhotoFiles();
+        buildListOfPhotoFiles();
         summarisePhotoFilesByFileType();
     }
 
@@ -68,29 +68,22 @@ public class PhotoSubFolder {
         newSubFolderName = newPrefix.concat(subFolderName.substring(21));
     }
 
-    private void retrieveListOfPhotoFiles() {
+    private void buildListOfPhotoFiles() {
         File subFolder = new File(folderName.concat("\\").concat(subFolderName));
         File[] files = subFolder.listFiles();
         for (File file : files) {
-            PhotoFile photoFile = new PhotoFile(file.getName());
-
-            int newFileSequence = incrementCountOfFileCategory(photoFile.getFileType().getFileCategory());
-            if (photoFile.getFileType().getFileCategory().isRenameFile() &
-                    newSubFolderName != null) {
-                photoFile.setNewFilename(renamePhotoFile(photoFile.getFilename(),newFileSequence));
-            }
-            photoFiles.add(photoFile);
+            photoFiles.add(createPhotoFile(file.getName()));
         }
     }
 
-    private void summarisePhotoFilesByFileType() {
-        for (PhotoFile photoFile : photoFiles) {
-            if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
-                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
-            } else {
-                summaryOfFileTypes.put(photoFile.getFileType(), 1);
-            }
+    private PhotoFile createPhotoFile(String filename) {
+        PhotoFile photoFile = new PhotoFile(filename);
+        int newFileSequence = incrementCountOfFileCategory(photoFile.getFileType().getFileCategory());
+        if (photoFile.getFileType().getFileCategory().isRenameFile() &
+                newSubFolderName != null) {
+            photoFile.setNewFilename(renamePhotoFile(photoFile.getFilename(), newFileSequence));
         }
+        return photoFile;
     }
 
     private int incrementCountOfFileCategory(FileCategory fileCategory) {
@@ -146,6 +139,16 @@ public class PhotoSubFolder {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+            }
+        }
+    }
+
+    private void summarisePhotoFilesByFileType() {
+        for (PhotoFile photoFile : photoFiles) {
+            if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
+                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
+            } else {
+                summaryOfFileTypes.put(photoFile.getFileType(), 1);
             }
         }
     }
