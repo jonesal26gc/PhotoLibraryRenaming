@@ -13,6 +13,13 @@ import java.util.Map;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PhotoSubFolder {
+    private static final char DASH = '-';
+    private static final char SPACE = ' ';
+    private static final String SLASH_DELIMITER = "\\";
+    private static final char OPEN_SQUARE_BRACKET = '[';
+    private static final char CLOSE_SQUARE_BRACKET = ']';
+    private static final String EMPTY_STRING = "";
+    private static final char FULL_STOP = '.';
     private String folderName;
     private String subFolderName;
     private boolean OriginalSubFolderNameFormat = false;
@@ -31,14 +38,14 @@ public class PhotoSubFolder {
         checkThatItIsFolder();
         determineSubFolderNameFormatIndicators();
         if (isOriginalSubFolderNameFormat()) {
-            formatNewSubFolderName();
+            formatNewSubFolderName(subFolderName);
         }
         buildListOfPhotoFiles();
         buildPhotoFilesByFileTypeSubTotals();
     }
 
     private void checkThatItIsFolder() {
-        File file = new File(folderName.concat("\\").concat(subFolderName));
+        File file = new File(folderName.concat(SLASH_DELIMITER).concat(subFolderName));
         if (!file.isDirectory()) {
             throw new RuntimeException("Photo SubFolder '" + subFolderName + "' is not a folder");
         }
@@ -56,21 +63,20 @@ public class PhotoSubFolder {
         return OriginalSubFolderNameFormat;
     }
 
-    private void formatNewSubFolderName() {
-        String newPrefix = subFolderName.substring(0, 4)
-                + subFolderName.substring(4, 5)
-                + subFolderName.substring(5, 7)
-                + "-"
-                + subFolderName.substring(8, 10)
-                + " "
-                + Month.findAbbreviatedName(subFolderName.substring(5, 7))
-                + subFolderName.substring(2, 4)
-                + " ";
-        revisedSubFolderName = newPrefix.concat(subFolderName.substring(21));
+    private void formatNewSubFolderName(String subFolderName) {
+        revisedSubFolderName = (cutCenturyAndYear(subFolderName)
+                + DASH
+                + cutMonth(subFolderName)
+                + DASH
+                + cutDay(subFolderName)
+                + SPACE
+                + Month.findAbbreviatedName(cutMonth(subFolderName))
+                + cutYear(subFolderName)
+                + SPACE).concat(cutSubjectText(subFolderName));
     }
 
     private void buildListOfPhotoFiles() {
-        File subFolder = new File(folderName.concat("\\").concat(subFolderName));
+        File subFolder = new File(folderName.concat(SLASH_DELIMITER).concat(subFolderName));
         File[] files = subFolder.listFiles();
         for (File file : files) {
             photoFiles.add(createPhotoFile(file.getName()));
@@ -85,6 +91,26 @@ public class PhotoSubFolder {
                 summaryOfFileTypes.put(photoFile.getFileType(), 1);
             }
         }
+    }
+
+    private String cutCenturyAndYear(String subFolderName) {
+        return subFolderName.substring(0, 4);
+    }
+
+    private String cutMonth(String subFolderName) {
+        return subFolderName.substring(5, 7);
+    }
+
+    private String cutDay(String subFolderName) {
+        return subFolderName.substring(8, 10);
+    }
+
+    private String cutYear(String subFolderName) {
+        return subFolderName.substring(2, 4);
+    }
+
+    private String cutSubjectText(String subFolderName) {
+        return subFolderName.substring(21);
     }
 
     private PhotoFile createPhotoFile(String filename) {
@@ -108,23 +134,39 @@ public class PhotoSubFolder {
     }
 
     public String renamePhotoFile(String filename, int newSequenceNumber) {
-        int commentStartPos = filename.indexOf('[');
-        int commentEndPos = filename.indexOf(']');
 
-        String commentField;
+        return cutTimeStampFromNewSubFolderName()
+                .concat(formatFileSequenceNumber(newSequenceNumber))
+                .concat(cutSubjectTextFromNewSubFolderName())
+                .concat(cutCommentFieldFromFilename(filename))
+                .concat(cutFileExtensionFromFilename(filename));
+    }
+
+    private String cutTimeStampFromNewSubFolderName() {
+        return revisedSubFolderName.substring(0, 17);
+    }
+
+    private String formatFileSequenceNumber(int newSequenceNumber) {
+        return String.format("#%03d ", newSequenceNumber);
+    }
+
+    private String cutSubjectTextFromNewSubFolderName() {
+        return revisedSubFolderName.substring(17);
+    }
+
+    private String cutCommentFieldFromFilename(String filename) {
+        int commentStartPos = filename.indexOf(OPEN_SQUARE_BRACKET);
+        int commentEndPos = filename.indexOf(CLOSE_SQUARE_BRACKET);
+
         if (commentStartPos >= 0
-                & commentEndPos > 0
                 & commentStartPos < commentEndPos) {
-            commentField = " " + filename.substring(commentStartPos, commentEndPos + 1);
-        } else {
-            commentField = "";
+            return SPACE + filename.substring(commentStartPos, commentEndPos + 1);
         }
+        return EMPTY_STRING;
+    }
 
-        return revisedSubFolderName.substring(0, 17)
-                .concat(String.format("#%03d ", newSequenceNumber))
-                .concat(revisedSubFolderName.substring(17))
-                .concat(commentField)
-                .concat(filename.substring(filename.indexOf('.')));
+    private String cutFileExtensionFromFilename(String filename) {
+        return filename.substring(filename.indexOf(FULL_STOP));
     }
 
     public void makeNewSubFolder() {
@@ -134,7 +176,7 @@ public class PhotoSubFolder {
                 throw new RuntimeException("Error - unable to create new folder '" + revisedFolderName + "'.");
             }
         }
-        File subFolder = new File(revisedFolderName.concat("\\").concat(revisedSubFolderName));
+        File subFolder = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName));
         if (!subFolder.mkdir()) {
             throw new RuntimeException("Error - unable to create new sub-folder '" + revisedSubFolderName + "'.");
         }
@@ -144,8 +186,8 @@ public class PhotoSubFolder {
         for (PhotoFile photoFile : photoFiles) {
             if (photoFile.getFileType().getFileCategory().isRetainFile()) {
                 try {
-                    File file = new File(folderName.concat("\\").concat(subFolderName).concat("\\").concat(photoFile.getFilename()));
-                    File newFile = new File(revisedFolderName.concat("\\").concat(revisedSubFolderName).concat("\\").concat(photoFile.getRevisedFilename()));
+                    File file = new File(folderName.concat(SLASH_DELIMITER).concat(subFolderName).concat(SLASH_DELIMITER).concat(photoFile.getFilename()));
+                    File newFile = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName).concat(SLASH_DELIMITER).concat(photoFile.getRevisedFilename()));
                     Files.copy(file.toPath(), newFile.toPath(), REPLACE_EXISTING);
                 } catch (Exception ex) {
                     ex.printStackTrace();
