@@ -15,8 +15,8 @@ public class PrimaryPhotoFolder {
     public PrimaryPhotoFolder(String folderName) {
         this.folderName = folderName;
         checkThatItIsFolder();
-        retrieveListOfSubFolders();
-        summarisePhotoFilesByFileType();
+        buildListOfSubFolders();
+        buildPhotoFilesByFileTypeTotals();
     }
 
     private void checkThatItIsFolder() {
@@ -26,7 +26,7 @@ public class PrimaryPhotoFolder {
         }
     }
 
-    public void retrieveListOfSubFolders() {
+    public void buildListOfSubFolders() {
         File subFolder = new File(folderName);
         File[] files = subFolder.listFiles();
 
@@ -35,7 +35,7 @@ public class PrimaryPhotoFolder {
         }
     }
 
-    private void summarisePhotoFilesByFileType() {
+    private void buildPhotoFilesByFileTypeTotals() {
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
             for (Map.Entry<FileType, Integer> subTotal : photoSubFolder.getSummaryOfFileTypes().entrySet()) {
                 if (summaryOfFileTypes.containsKey(subTotal.getKey())) {

@@ -34,7 +34,7 @@ public class PhotoSubFolder {
             formatNewSubFolderName();
         }
         buildListOfPhotoFiles();
-        summarisePhotoFilesByFileType();
+        buildPhotoFilesByFileTypeSubTotals();
     }
 
     private void checkThatItIsFolder() {
@@ -77,7 +77,7 @@ public class PhotoSubFolder {
         }
     }
 
-    private void summarisePhotoFilesByFileType() {
+    private void buildPhotoFilesByFileTypeSubTotals() {
         for (PhotoFile photoFile : photoFiles) {
             if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
                 summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
