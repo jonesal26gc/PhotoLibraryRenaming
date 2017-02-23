@@ -150,7 +150,7 @@ public class PhotoRenaming {
         FileType ft = FileType.findFileTypeFromFilename(targetFile.getName());
 
         // Process the file according to type.
-        if ( ft.getFileCategory().equals(FileCategory.PICTURE)) {
+        if ( ft.getFileCategory().equals(FileCategory.PHOTO)) {
             System.out.print(NEW_LINE + "Information - Picture file found - renaming: " + targetFile.getName());
 
             // Rename the file.

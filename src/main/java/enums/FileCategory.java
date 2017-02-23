@@ -1,13 +1,27 @@
 package enums;
 
 public enum FileCategory {
-     PICTURE
-    ,VIDEO
-    ,VIDEO_ANALYSIS
-    ,MUSIC
-    ,RUBBISH
-    ,DOCUMENT
-    ,THUMBNAIL;
+     PHOTO(true,true)
+    ,VIDEO(true,true)
+    ,VIDEO_ANALYSIS(true,false)
+    ,MUSIC(true,false)
+    ,RUBBISH(false,false)
+    ,DOCUMENT(true,false)
+    ,THUMBNAIL(false,false);
 
-    FileCategory() {}
+    private boolean retainFile;
+    private boolean renameFile;
+
+    FileCategory(boolean retainFile, boolean renameFile) {
+        this.retainFile = retainFile;
+        this.renameFile = renameFile;
+    }
+
+    public boolean isRetainFile() {
+        return retainFile;
+    }
+
+    public boolean isRenameFile() {
+        return renameFile;
+    }
 }

@@ -15,11 +15,9 @@ public class PhotoSubFolder {
     private boolean OriginalSubFolderName = false;
     private boolean NewSubFolderName = false;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
+    private Map<FileCategory, Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
     private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
-
     private String newSubFolderName = null;
-    private int newPhotoFileSequenceNumber = 1;
-    private int newVideoFileSequenceNumber = 1;
 
     public PhotoSubFolder(String folderName, String subFolderName) {
         this.folderName = folderName;
@@ -31,19 +29,6 @@ public class PhotoSubFolder {
         }
         retrieveListOfPhotoFiles();
         summarisePhotoFilesByFileType();
-    }
-
-    private void formatNewSubFolderName() {
-        String newPrefix = subFolderName.substring(0, 4)
-                + subFolderName.substring(4, 5)
-                + subFolderName.substring(5, 7)
-                + "-"
-                + subFolderName.substring(8, 10)
-                + " "
-                + Month.findAbbreviatedName(subFolderName.substring(5, 7))
-                + subFolderName.substring(2, 4)
-                + " ";
-        newSubFolderName = newPrefix.concat(subFolderName.substring(21));
     }
 
     private void checkThatItIsFolder() {
@@ -61,23 +46,46 @@ public class PhotoSubFolder {
         NewSubFolderName = checkerForNewSubFolderName.validate(subFolderName);
     }
 
+    public boolean isOriginalSubFolderName() {
+        return OriginalSubFolderName;
+    }
+
+    private void formatNewSubFolderName() {
+        String newPrefix = subFolderName.substring(0, 4)
+                + subFolderName.substring(4, 5)
+                + subFolderName.substring(5, 7)
+                + "-"
+                + subFolderName.substring(8, 10)
+                + " "
+                + Month.findAbbreviatedName(subFolderName.substring(5, 7))
+                + subFolderName.substring(2, 4)
+                + " ";
+        newSubFolderName = newPrefix.concat(subFolderName.substring(21));
+    }
+
     private void retrieveListOfPhotoFiles() {
         File subFolder = new File(folderName.concat("\\").concat(subFolderName));
         File[] files = subFolder.listFiles();
         for (File file : files) {
             PhotoFile photoFile = new PhotoFile(file.getName());
 
-            switch (photoFile.getFileType().getFileCategory()) {
-                case PICTURE: break;
-                case VIDEO: break;
-            }
-
-            if (newSubFolderName != null &
-                    photoFile.getFileType().getFileCategory() == FileCategory.PICTURE){
-                photoFile.setNewFilename(newSubFolderName, newPhotoFileSequenceNumber++);
+            int newFileSequence = incrementCountOfFileCategory(photoFile.getFileType().getFileCategory());
+            if (photoFile.getFileType().getFileCategory().isRenameFile() &
+                    newSubFolderName != null ) {
+                photoFile.setNewFilename(newSubFolderName, newFileSequence);
             }
             photoFiles.add(photoFile);
         }
+    }
+
+    private int incrementCountOfFileCategory(FileCategory fileCategory) {
+        if (countOfFileCategories.containsKey(fileCategory)) {
+            countOfFileCategories.put(fileCategory,
+                    (countOfFileCategories.get(fileCategory)) + 1);
+        } else {
+            countOfFileCategories.put(fileCategory, 1);
+        }
+        return countOfFileCategories.get(fileCategory);
     }
 
     private void summarisePhotoFilesByFileType() {
@@ -92,10 +100,6 @@ public class PhotoSubFolder {
 
     public String getSubFolderName() {
         return subFolderName;
-    }
-
-    public boolean isOriginalSubFolderName() {
-        return OriginalSubFolderName;
     }
 
     public boolean isNewSubFolderName() {

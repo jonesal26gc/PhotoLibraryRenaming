@@ -59,7 +59,7 @@ public class PhotoCount {
         System.out.print(NEW_LINE + "Grand Totals:");
         for (Map.Entry<FileType, Integer> e : fileTypeTotalsTable.entrySet()) {
             System.out.print(NEW_LINE + "  " + e.getKey().name() + ": " + e.getValue());
-            //if ( e.getKey().getFileCategory().equals(FileCategory.PICTURE) ) {
+            //if ( e.getKey().getFileCategory().equals(FileCategory.PHOTO) ) {
             System.out.print(String.format(" %s(s)", e.getKey().getFileCategory()));
             //}
         }

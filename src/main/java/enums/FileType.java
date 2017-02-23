@@ -4,7 +4,7 @@ package enums;
 // instance variables.
 // Getters, setters and constructors apply just the same as another class.
 public enum FileType {
-    JPG(FileCategory.PICTURE),
+    JPG(FileCategory.PHOTO),
     MOV(FileCategory.VIDEO),
     TXT(FileCategory.DOCUMENT),
     DOC(FileCategory.DOCUMENT),
@@ -13,10 +13,10 @@ public enum FileType {
     MOFF(FileCategory.VIDEO_ANALYSIS),
     MODD(FileCategory.VIDEO_ANALYSIS),
     DB(FileCategory.RUBBISH),
-    BMP(FileCategory.PICTURE),
+    BMP(FileCategory.PHOTO),
     M4V(FileCategory.VIDEO),
     THM(FileCategory.THUMBNAIL),
-    PNG(FileCategory.PICTURE),
+    PNG(FileCategory.PHOTO),
     MP4(FileCategory.VIDEO),
     INI(FileCategory.RUBBISH),
     XXX(FileCategory.RUBBISH),

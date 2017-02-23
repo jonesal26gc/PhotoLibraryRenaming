@@ -23,7 +23,7 @@ public class PhotoFile {
         }
     }
 
-    public void setNewFilename(String newSubFolderName, int newPhotoFileSequenceNumber) {
+    public void setNewFilename(String newSubFolderName, int newSequenceNumber) {
         int commentStartPos = filename.indexOf('[');
         int commentEndPos = filename.indexOf(']');
 
@@ -37,7 +37,7 @@ public class PhotoFile {
         }
 
         newFilename = newSubFolderName.substring(0, 17)
-                .concat(String.format("#%03d ", newPhotoFileSequenceNumber))
+                .concat(String.format("#%03d ", newSequenceNumber))
                 .concat(newSubFolderName.substring(17))
                 .concat(commentField)
                 .concat(filename.substring(filename.indexOf('.')));
