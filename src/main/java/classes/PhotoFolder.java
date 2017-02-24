@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PrimaryPhotoFolder {
+public class PhotoFolder {
     private String folderName;
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
     private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
 
-    public PrimaryPhotoFolder(String folderName) {
+    public PhotoFolder(String folderName) {
         this.folderName = folderName;
         checkThatItIsFolder();
         buildListOfSubFolders();
@@ -61,7 +61,7 @@ public class PrimaryPhotoFolder {
 
     @Override
     public String toString() {
-        return "PrimaryPhotoFolder{" +
+        return "PhotoFolder{" +
                 "folderName='" + folderName + '\'' +
                 ", summaryOfFileTypes=" + summaryOfFileTypes +
                 '}';
