@@ -26,4 +26,8 @@ public enum FileCategory {
     public boolean isRenameFile() {
         return renameFile;
     }
+
+    public String getLibraryName() {
+        return libraryName;
+    }
 }

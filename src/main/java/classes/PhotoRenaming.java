@@ -195,7 +195,7 @@ public class PhotoRenaming {
                 targetFile.renameTo(revisedTargetFile);
             }
 
-        } else  if ( ft.getFileCategory().equals(FileCategory.VIDEO_ANALYSIS) ) {
+        } else  if ( ft.getFileCategory().equals(FileCategory.VIDEO_SONY) ) {
             System.out.print(NEW_LINE + "Information - Video analysis file found - retaining: " + targetFile.getName());
 
         } else  if ( ft.getFileCategory().equals(FileCategory.RUBBISH) ) {

@@ -20,6 +20,7 @@ public class PhotoSubFolder {
     private static final char CLOSE_SQUARE_BRACKET = ']';
     private static final String EMPTY_STRING = "";
     private static final char FULL_STOP = '.';
+    private static final String REVISED_FOLDER_NAME = "Family XXXXX Library - Revised Copy";
     private String folderName;
     private String subFolderName;
     private boolean OriginalSubFolderNameFormat = false;
@@ -27,12 +28,10 @@ public class PhotoSubFolder {
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
     private Map<FileCategory, Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
     private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
-    private String revisedFolderName;
     private String revisedSubFolderName;
 
     public PhotoSubFolder(String folderName, String subFolderName) {
         this.folderName = folderName;
-        this.revisedFolderName = folderName.concat(" - New Revised Copy");
         this.subFolderName = subFolderName;
         this.revisedSubFolderName = subFolderName;
         checkThatItIsFolder();
@@ -169,7 +168,13 @@ public class PhotoSubFolder {
         return filename.substring(filename.indexOf(FULL_STOP));
     }
 
-    public void makeNewSubFolder() {
+    public void makeNewFolders() {
+        for (Map.Entry<FileCategory,Integer> fileCategory : countOfFileCategories.entrySet()){
+            makeNewSubFolder(REVISED_FOLDER_NAME.replaceFirst("XXXXX",fileCategory.getKey().getLibraryName()));
+        }
+    }
+
+    public void makeNewSubFolder(String revisedFolderName) {
         File folder = new File(revisedFolderName);
         if (!folder.exists()) {
             if (!folder.mkdir()) {
@@ -182,7 +187,7 @@ public class PhotoSubFolder {
         }
     }
 
-    public void copyToNewSubFolder() {
+    public void copyToNewSubFolder(String revisedFolderName) {
         for (PhotoFile photoFile : photoFiles) {
             if (photoFile.getFileType().getFileCategory().isRetainFile()) {
                 try {
@@ -218,10 +223,6 @@ public class PhotoSubFolder {
 
     public Map<FileType, Integer> getSummaryOfFileTypes() {
         return summaryOfFileTypes;
-    }
-
-    public String getRevisedFolderName() {
-        return revisedFolderName;
     }
 
     public String getRevisedSubFolderName() {
