@@ -5,13 +5,13 @@ package enums;
 // Getters, setters and constructors apply just the same as another class.
 public enum FileType {
     JPG(FileCategory.PHOTO),
-    MOV(FileCategory.VIDEO),
+    MOV(FileCategory.VIDEO_SONY),
     TXT(FileCategory.DOCUMENT),
     DOC(FileCategory.DOCUMENT),
     DOCX(FileCategory.DOCUMENT),
     MPG(FileCategory.VIDEO),
-    MOFF(FileCategory.VIDEO_ANALYSIS),
-    MODD(FileCategory.VIDEO_ANALYSIS),
+    MOFF(FileCategory.VIDEO_SONY),
+    MODD(FileCategory.VIDEO_SONY),
     DB(FileCategory.RUBBISH),
     BMP(FileCategory.PHOTO),
     M4V(FileCategory.VIDEO),
