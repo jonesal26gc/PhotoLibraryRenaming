@@ -1,6 +1,14 @@
-import classes.PhotoFile;
-import classes.PhotoSubFolder;
+import classes.*;
+import enums.FileCategory;
+import enums.FileType;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class PhotoSubFolderShould {
 
@@ -26,6 +34,74 @@ public class PhotoSubFolderShould {
         for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
             System.out.println(photoFile.getFilename());
         }
+    }
+
+    @Test
+    public void
+    provide_totals_by_fileType() {
+        // given
+        PhotoFile photoFile1 = PhotoFileBuilder.aPhotoFile().withFilename("a").withFileType(FileType.BMP).build();
+        PhotoFile photoFile2 = PhotoFileBuilder.aPhotoFile().withFilename("a").withFileType(FileType.DOC).build();
+        ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
+        photoFiles.add(photoFile1);
+        photoFiles.add(photoFile2);
+        PhotoSubFolder photoSubFolder1 = PhotoSubFolderBuilder.aPhotoSubFolder().withPhotoFiles(photoFiles).build();
+
+        // when
+        HashMap<FileType, Integer> totals = photoSubFolder1.getPhotoFilesByFileTypeSubTotals();
+
+        // then
+        for (Map.Entry<FileType,Integer> i : totals.entrySet()){
+            System.out.println(i.getKey().name() + "=" + i.getValue());
+        }
+        assertThat(totals.size(),is(2));
+    }
+
+
+    @Test
+    public void
+    create_revised_folderStructure(){
+
+        HashMap<FileCategory,Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
+        countOfFileCategories.put(FileCategory.PHOTO,1);
+        countOfFileCategories.put(FileCategory.VIDEO,1);
+        PhotoSubFolder photoSubFolder = PhotoSubFolderBuilder.aPhotoSubFolder()
+                .withRevisedSubFolderName("revisedSubFolderName")
+                .withCountOfFileCategories(countOfFileCategories)
+                .build();
+        photoSubFolder.createRevisedFolderStructure();
+    }
+
+    @Test
+    public void
+    copy_files_to_revised_folderStructure(){
+
+        PhotoFile photoFile1 = PhotoFileBuilder.aPhotoFile()
+                .withFilename("picture.jpg").withFileType(FileType.JPG)
+                .withRevisedFilename("picture.jpg")
+                .build();
+        PhotoFile photoFile2 = PhotoFileBuilder.aPhotoFile()
+                .withFilename("video.mp4").withFileType(FileType.MP4)
+                .withRevisedFilename("video.mp4")
+                .build();
+        ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
+        photoFiles.add(photoFile1);
+        photoFiles.add(photoFile2);
+
+        HashMap<FileCategory,Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
+        countOfFileCategories.put(FileCategory.PHOTO,1);
+        countOfFileCategories.put(FileCategory.VIDEO,1);
+
+        PhotoSubFolder photoSubFolder = PhotoSubFolderBuilder.aPhotoSubFolder()
+                .withPhotoFiles(photoFiles)
+                .withCountOfFileCategories(countOfFileCategories)
+                .withFolderName("D:\\folderName")
+                .withSubFolderName("subFolderName")
+                .withRevisedSubFolderName("revisedSubFolderName")
+                .build();
+
+        //System.out.println(photoSubFolder.toString());
+        photoSubFolder.copyFileToRevisedSubFolder("D:\\Family Photo Library - Revised Copy");
     }
 
 }

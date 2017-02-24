@@ -15,6 +15,12 @@ public class PhotoFile {
         this.fileType = FileType.findFileTypeFromFilename(filename);
     }
 
+    public PhotoFile(String filename, FileType fileType, String revisedFilename) {
+        this.filename = filename;
+        this.fileType = fileType;
+        this.revisedFilename = revisedFilename;
+    }
+
     private void checkThatItIsFile() {
         File file = new File(filename);
         if (file.isDirectory()) {

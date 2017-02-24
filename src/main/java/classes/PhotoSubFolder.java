@@ -20,13 +20,13 @@ public class PhotoSubFolder {
     private static final char CLOSE_SQUARE_BRACKET = ']';
     private static final String EMPTY_STRING = "";
     private static final char FULL_STOP = '.';
-    private static final String REVISED_FOLDER_NAME = "Family XXXXX Library - Revised Copy";
+    private static final String REVISED_FOLDER_NAME = "D:\\Family XXXXX Library - Revised Copy";
     private String folderName;
     private String subFolderName;
     private boolean originalSubFolderNameFormat;
     private boolean newSubFolderNameFormat;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
-    private Map<FileCategory, Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
+    private Map<FileCategory, Integer> countOfFilesInFileCategory = new HashMap<FileCategory, Integer>();
     private String revisedSubFolderName;
 
     public PhotoSubFolder(String folderName, String subFolderName) {
@@ -39,16 +39,15 @@ public class PhotoSubFolder {
             formatNewSubFolderName(subFolderName);
         }
         buildListOfPhotoFiles();
-        getPhotoFilesByFileTypeSubTotals();
     }
 
-    public PhotoSubFolder(String folderName, String subFolderName, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFileCategories, String revisedSubFolderName) {
+    public PhotoSubFolder(String folderName, String subFolderName, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFilesInFileCategory, String revisedSubFolderName) {
         this.folderName = folderName;
         this.subFolderName = subFolderName;
         this.originalSubFolderNameFormat = originalSubFolderNameFormat;
         this.newSubFolderNameFormat = newSubFolderNameFormat;
         this.photoFiles = photoFiles;
-        this.countOfFileCategories = countOfFileCategories;
+        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
         this.revisedSubFolderName = revisedSubFolderName;
     }
 
@@ -72,15 +71,15 @@ public class PhotoSubFolder {
     }
 
     private void formatNewSubFolderName(String subFolderName) {
-        revisedSubFolderName = (cutCenturyAndYear(subFolderName)
+        revisedSubFolderName = (getCenturyAndYear(subFolderName)
                 + DASH
-                + cutMonth(subFolderName)
+                + getMonth(subFolderName)
                 + DASH
-                + cutDay(subFolderName)
+                + getDay(subFolderName)
                 + SPACE
-                + Month.findAbbreviatedName(cutMonth(subFolderName))
-                + cutYear(subFolderName)
-                + SPACE).concat(cutSubjectText(subFolderName));
+                + Month.findAbbreviatedName(getMonth(subFolderName))
+                + getYear(subFolderName)
+                + SPACE).concat(getSubjectText(subFolderName));
     }
 
     private void buildListOfPhotoFiles() {
@@ -91,8 +90,8 @@ public class PhotoSubFolder {
         }
     }
 
-    public Map<FileType, Integer> getPhotoFilesByFileTypeSubTotals() {
-        Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
+    public HashMap<FileType, Integer> getPhotoFilesByFileTypeSubTotals() {
+        HashMap<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
         for (PhotoFile photoFile : photoFiles) {
             if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
                 summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
@@ -103,29 +102,29 @@ public class PhotoSubFolder {
         return summaryOfFileTypes;
     }
 
-    private String cutCenturyAndYear(String subFolderName) {
+    private String getCenturyAndYear(String subFolderName) {
         return subFolderName.substring(0, 4);
     }
 
-    private String cutMonth(String subFolderName) {
+    private String getMonth(String subFolderName) {
         return subFolderName.substring(5, 7);
     }
 
-    private String cutDay(String subFolderName) {
+    private String getDay(String subFolderName) {
         return subFolderName.substring(8, 10);
     }
 
-    private String cutYear(String subFolderName) {
+    private String getYear(String subFolderName) {
         return subFolderName.substring(2, 4);
     }
 
-    private String cutSubjectText(String subFolderName) {
+    private String getSubjectText(String subFolderName) {
         return subFolderName.substring(21);
     }
 
     private PhotoFile createPhotoFile(String filename) {
         PhotoFile photoFile = new PhotoFile(filename);
-        int newFileSequence = incrementCountOfFileCategory(photoFile.getFileType().getFileCategory());
+        int newFileSequence = incrementCountOfFilesInFileCategory(photoFile.getFileType().getFileCategory());
         if (photoFile.getFileType().getFileCategory().isRenameFile() &
                 isOriginalSubFolderNameFormat()) {
             photoFile.setRevisedFilename(renamePhotoFile(photoFile.getFilename(), newFileSequence));
@@ -133,26 +132,26 @@ public class PhotoSubFolder {
         return photoFile;
     }
 
-    private int incrementCountOfFileCategory(FileCategory fileCategory) {
-        if (countOfFileCategories.containsKey(fileCategory)) {
-            countOfFileCategories.put(fileCategory,
-                    (countOfFileCategories.get(fileCategory)) + 1);
+    private int incrementCountOfFilesInFileCategory(FileCategory fileCategory) {
+        if (countOfFilesInFileCategory.containsKey(fileCategory)) {
+            countOfFilesInFileCategory.put(fileCategory,
+                    (countOfFilesInFileCategory.get(fileCategory)) + 1);
         } else {
-            countOfFileCategories.put(fileCategory, 1);
+            countOfFilesInFileCategory.put(fileCategory, 1);
         }
-        return countOfFileCategories.get(fileCategory);
+        return countOfFilesInFileCategory.get(fileCategory);
     }
 
     public String renamePhotoFile(String filename, int newSequenceNumber) {
 
-        return cutTimeStampFromNewSubFolderName()
+        return getTimeStampFromNewSubFolderName()
                 .concat(formatFileSequenceNumber(newSequenceNumber))
-                .concat(cutSubjectTextFromNewSubFolderName())
-                .concat(cutCommentFieldFromFilename(filename))
-                .concat(cutFileExtensionFromFilename(filename));
+                .concat(getSubjectTextFromNewSubFolderName())
+                .concat(getCommentFieldFromFilename(filename))
+                .concat(getFileExtensionFromFilename(filename));
     }
 
-    private String cutTimeStampFromNewSubFolderName() {
+    private String getTimeStampFromNewSubFolderName() {
         return revisedSubFolderName.substring(0, 17);
     }
 
@@ -160,11 +159,11 @@ public class PhotoSubFolder {
         return String.format("#%03d ", newSequenceNumber);
     }
 
-    private String cutSubjectTextFromNewSubFolderName() {
+    private String getSubjectTextFromNewSubFolderName() {
         return revisedSubFolderName.substring(17);
     }
 
-    private String cutCommentFieldFromFilename(String filename) {
+    private String getCommentFieldFromFilename(String filename) {
         int commentStartPos = filename.indexOf(OPEN_SQUARE_BRACKET);
         int commentEndPos = filename.indexOf(CLOSE_SQUARE_BRACKET);
 
@@ -175,30 +174,36 @@ public class PhotoSubFolder {
         return EMPTY_STRING;
     }
 
-    private String cutFileExtensionFromFilename(String filename) {
+    private String getFileExtensionFromFilename(String filename) {
         return filename.substring(filename.indexOf(FULL_STOP));
     }
 
-    public void makeNewFolders() {
-        for (Map.Entry<FileCategory,Integer> fileCategory : countOfFileCategories.entrySet()){
-            makeNewSubFolder(REVISED_FOLDER_NAME.replaceFirst("XXXXX",fileCategory.getKey().getLibraryName()));
+    public void createRevisedFolderStructure() {
+        for (Map.Entry<FileCategory, Integer> fileCategory : countOfFilesInFileCategory.entrySet()) {
+            createRevisedSubFolder(REVISED_FOLDER_NAME.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName()));
         }
     }
 
-    public void makeNewSubFolder(String revisedFolderName) {
+    public void createRevisedSubFolder(String revisedFolderName) {
         File folder = new File(revisedFolderName);
-        if (!folder.exists()) {
-            if (!folder.mkdir()) {
-                throw new RuntimeException("Error - unable to create new folder '" + revisedFolderName + "'.");
+        if (folder.exists()) {
+            if (!folder.delete()) {
+                throw new RuntimeException("Error - unable to delete new folder '" + revisedFolderName + "'.");
             }
         }
+        if (!folder.mkdir()) {
+            throw new RuntimeException("Error - unable to create new folder '" + revisedFolderName + "'.");
+        }
+
         File subFolder = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName));
-        if (!subFolder.mkdir()) {
-            throw new RuntimeException("Error - unable to create new sub-folder '" + revisedSubFolderName + "'.");
+        if (!subFolder.exists()) {
+            if (!subFolder.mkdir()) {
+                throw new RuntimeException("Error - unable to create new sub-folder '" + revisedSubFolderName + "'.");
+            }
         }
     }
 
-    public void copyToNewSubFolder(String revisedFolderName) {
+    public void copyFileToRevisedSubFolder(String revisedFolderName) {
         for (PhotoFile photoFile : photoFiles) {
             if (photoFile.getFileType().getFileCategory().isRetainFile()) {
                 try {
@@ -228,8 +233,8 @@ public class PhotoSubFolder {
         return photoFiles;
     }
 
-    public Map<FileCategory, Integer> getCountOfFileCategories() {
-        return countOfFileCategories;
+    public Map<FileCategory, Integer> getCountOfFilesInFileCategory() {
+        return countOfFilesInFileCategory;
     }
 
     public String getRevisedSubFolderName() {
@@ -244,7 +249,7 @@ public class PhotoSubFolder {
                 ", originalSubFolderNameFormat=" + originalSubFolderNameFormat +
                 ", newSubFolderNameFormat=" + newSubFolderNameFormat +
                 ", photoFiles=" + photoFiles +
-                ", countOfFileCategories=" + countOfFileCategories +
+                ", countOfFilesInFileCategory=" + countOfFilesInFileCategory +
                 ", revisedSubFolderName='" + revisedSubFolderName + '\'' +
                 '}';
     }
