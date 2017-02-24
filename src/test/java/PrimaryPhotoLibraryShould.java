@@ -35,12 +35,12 @@ public class PrimaryPhotoLibraryShould {
                     System.out.println(photoFile.getRevisedFilename());
                 }
             }
-            for (Map.Entry<FileType, Integer> i : photoSubFolder.getSummaryOfFileTypes().entrySet()) {
+            for (Map.Entry<FileType, Integer> i : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
                 System.out.println(i.getKey().name() + "=" + i.getValue());
             }
         }
         System.out.println("");
-        for (Map.Entry<FileType, Integer> i : photoFolder.getSummaryOfFileTypes().entrySet()) {
+        for (Map.Entry<FileType, Integer> i : photoFolder.getPhotoFilesByFileTypeTotals().entrySet()) {
             System.out.println(i.getKey().name() + "=" + i.getValue());
         }
 

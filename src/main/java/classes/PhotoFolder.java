@@ -10,16 +10,19 @@ import java.util.Map;
 public class PhotoFolder {
     private String folderName;
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
-    private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
 
     public PhotoFolder(String folderName) {
         this.folderName = folderName;
         checkThatItIsFolder();
         buildListOfSubFolders();
-        buildPhotoFilesByFileTypeTotals();
     }
 
-    private void checkThatItIsFolder() {
+    public PhotoFolder(String folderName, ArrayList<PhotoSubFolder> photoSubFolders) {
+        this.folderName = folderName;
+        this.photoSubFolders = photoSubFolders;
+    }
+
+    public void checkThatItIsFolder() {
         File file = new File(folderName);
         if (!file.isDirectory()) {
             throw new RuntimeException("Primary Photo Library '" + folderName + "'is not a folder");
@@ -35,9 +38,10 @@ public class PhotoFolder {
         }
     }
 
-    private void buildPhotoFilesByFileTypeTotals() {
+    public HashMap<FileType,Integer> getPhotoFilesByFileTypeTotals() {
+        HashMap<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
-            for (Map.Entry<FileType, Integer> subTotal : photoSubFolder.getSummaryOfFileTypes().entrySet()) {
+            for (Map.Entry<FileType, Integer> subTotal : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
                 if (summaryOfFileTypes.containsKey(subTotal.getKey())) {
                     summaryOfFileTypes.put(subTotal.getKey(), summaryOfFileTypes.get(subTotal.getKey()) + subTotal.getValue());
                 } else {
@@ -45,6 +49,7 @@ public class PhotoFolder {
                 }
             }
         }
+        return summaryOfFileTypes;
     }
 
     public String getFolderName() {
@@ -55,15 +60,11 @@ public class PhotoFolder {
         return photoSubFolders;
     }
 
-    public Map<FileType, Integer> getSummaryOfFileTypes() {
-        return summaryOfFileTypes;
-    }
-
     @Override
     public String toString() {
         return "PhotoFolder{" +
                 "folderName='" + folderName + '\'' +
-                ", summaryOfFileTypes=" + summaryOfFileTypes +
+                ", photoSubFolders=" + photoSubFolders +
                 '}';
     }
 }

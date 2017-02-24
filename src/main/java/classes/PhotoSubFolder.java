@@ -23,11 +23,10 @@ public class PhotoSubFolder {
     private static final String REVISED_FOLDER_NAME = "Family XXXXX Library - Revised Copy";
     private String folderName;
     private String subFolderName;
-    private boolean OriginalSubFolderNameFormat = false;
-    private boolean NewSubFolderNameFormat = false;
+    private boolean originalSubFolderNameFormat;
+    private boolean newSubFolderNameFormat;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
     private Map<FileCategory, Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
-    private Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
     private String revisedSubFolderName;
 
     public PhotoSubFolder(String folderName, String subFolderName) {
@@ -40,7 +39,17 @@ public class PhotoSubFolder {
             formatNewSubFolderName(subFolderName);
         }
         buildListOfPhotoFiles();
-        buildPhotoFilesByFileTypeSubTotals();
+        getPhotoFilesByFileTypeSubTotals();
+    }
+
+    public PhotoSubFolder(String folderName, String subFolderName, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFileCategories, String revisedSubFolderName) {
+        this.folderName = folderName;
+        this.subFolderName = subFolderName;
+        this.originalSubFolderNameFormat = originalSubFolderNameFormat;
+        this.newSubFolderNameFormat = newSubFolderNameFormat;
+        this.photoFiles = photoFiles;
+        this.countOfFileCategories = countOfFileCategories;
+        this.revisedSubFolderName = revisedSubFolderName;
     }
 
     private void checkThatItIsFolder() {
@@ -52,14 +61,14 @@ public class PhotoSubFolder {
 
     private void determineSubFolderNameFormatIndicators() {
         CheckerForOriginalSubFolderName checkerForOriginalSubFolderName = new CheckerForOriginalSubFolderName();
-        OriginalSubFolderNameFormat = checkerForOriginalSubFolderName.validate(subFolderName);
+        originalSubFolderNameFormat = checkerForOriginalSubFolderName.validate(subFolderName);
 
         CheckerForNewSubFolderName checkerForNewSubFolderName = new CheckerForNewSubFolderName();
-        NewSubFolderNameFormat = checkerForNewSubFolderName.validate(subFolderName);
+        newSubFolderNameFormat = checkerForNewSubFolderName.validate(subFolderName);
     }
 
     public boolean isOriginalSubFolderNameFormat() {
-        return OriginalSubFolderNameFormat;
+        return originalSubFolderNameFormat;
     }
 
     private void formatNewSubFolderName(String subFolderName) {
@@ -82,7 +91,8 @@ public class PhotoSubFolder {
         }
     }
 
-    private void buildPhotoFilesByFileTypeSubTotals() {
+    public Map<FileType, Integer> getPhotoFilesByFileTypeSubTotals() {
+        Map<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
         for (PhotoFile photoFile : photoFiles) {
             if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
                 summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
@@ -90,6 +100,7 @@ public class PhotoSubFolder {
                 summaryOfFileTypes.put(photoFile.getFileType(), 1);
             }
         }
+        return summaryOfFileTypes;
     }
 
     private String cutCenturyAndYear(String subFolderName) {
@@ -210,7 +221,7 @@ public class PhotoSubFolder {
     }
 
     public boolean isNewSubFolderNameFormat() {
-        return NewSubFolderNameFormat;
+        return newSubFolderNameFormat;
     }
 
     public ArrayList<PhotoFile> getPhotoFiles() {
@@ -221,10 +232,6 @@ public class PhotoSubFolder {
         return countOfFileCategories;
     }
 
-    public Map<FileType, Integer> getSummaryOfFileTypes() {
-        return summaryOfFileTypes;
-    }
-
     public String getRevisedSubFolderName() {
         return revisedSubFolderName;
     }
@@ -232,8 +239,13 @@ public class PhotoSubFolder {
     @Override
     public String toString() {
         return "PhotoSubFolder{" +
-                "subFolderName='" + subFolderName + '\'' +
-                ", summaryOfFileTypes=" + summaryOfFileTypes +
+                "folderName='" + folderName + '\'' +
+                ", subFolderName='" + subFolderName + '\'' +
+                ", originalSubFolderNameFormat=" + originalSubFolderNameFormat +
+                ", newSubFolderNameFormat=" + newSubFolderNameFormat +
+                ", photoFiles=" + photoFiles +
+                ", countOfFileCategories=" + countOfFileCategories +
+                ", revisedSubFolderName='" + revisedSubFolderName + '\'' +
                 '}';
     }
 }
