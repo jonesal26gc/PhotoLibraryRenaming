@@ -1,3 +1,5 @@
+import builders.PhotoFileBuilder;
+import builders.PhotoSubFolderBuilder;
 import classes.*;
 import enums.FileCategory;
 import enums.FileType;

@@ -50,11 +50,11 @@ public class PhotoSubFolder {
     }
 
     private void determineSubFolderNameFormatIndicators() {
-        CheckerForOriginalSubFolderName checkerForOriginalSubFolderName = new CheckerForOriginalSubFolderName();
-        originalSubFolderNameFormat = checkerForOriginalSubFolderName.validate(subFolderName);
+        FormatCheckerForOriginalSubFolderName formatCheckerForOriginalSubFolderName = new FormatCheckerForOriginalSubFolderName();
+        originalSubFolderNameFormat = formatCheckerForOriginalSubFolderName.validate(subFolderName);
 
-        CheckerForNewSubFolderName checkerForNewSubFolderName = new CheckerForNewSubFolderName();
-        newSubFolderNameFormat = checkerForNewSubFolderName.validate(subFolderName);
+        FormatCheckerForNewSubFolderName formatCheckerForNewSubFolderName = new FormatCheckerForNewSubFolderName();
+        newSubFolderNameFormat = formatCheckerForNewSubFolderName.validate(subFolderName);
     }
 
     public boolean isOriginalSubFolderNameFormat() {

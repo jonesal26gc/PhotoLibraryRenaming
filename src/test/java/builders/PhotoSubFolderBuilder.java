@@ -1,5 +1,7 @@
-package classes;
+package builders;
 
+import classes.PhotoFile;
+import classes.PhotoSubFolder;
 import enums.FileCategory;
 
 import java.util.ArrayList;

@@ -1,3 +1,6 @@
+import builders.PhotoFileBuilder;
+import builders.PhotoFolderBuilder;
+import builders.PhotoSubFolderBuilder;
 import classes.*;
 import enums.FileType;
 import org.junit.Test;
@@ -46,4 +49,39 @@ public class PhotoFolderShould {
         assertThat(totals.size(),is(2));
     }
 
+    @Test
+    public void
+    contain_a_list_of_sub_folders() {
+        // given
+        PhotoFolder photoFolder = new PhotoFolder("D:\\Family Photo Library");
+
+        // then
+        for (PhotoSubFolder photoSubFolder : photoFolder.getPhotoSubFolders()) {
+            System.out.println(photoSubFolder.getSubFolderName());
+            for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
+                System.out.println(photoFile.getFilename());
+                if (photoFile.getRevisedFilename() != null) {
+                    System.out.println(photoFile.getRevisedFilename());
+                }
+            }
+            for (Map.Entry<FileType, Integer> i : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
+                System.out.println(i.getKey().name() + "=" + i.getValue());
+            }
+        }
+        System.out.println("");
+        for (Map.Entry<FileType, Integer> i : photoFolder.getPhotoFilesByFileTypeTotals().entrySet()) {
+            System.out.println(i.getKey().name() + "=" + i.getValue());
+        }
+
+        // tally "old" style folders.
+        int n = 0, o = 0;
+        for (PhotoSubFolder photoSubFolder : photoFolder.getPhotoSubFolders()) {
+            if (photoSubFolder.isNewSubFolderNameFormat()) n++;
+            if (photoSubFolder.isOriginalSubFolderNameFormat()) o++;
+            System.out.println(photoSubFolder.getRevisedSubFolderName());
+        }
+        System.out.println("");
+        System.out.println(o + " original subfolder names encountered.");
+        System.out.println(n + " new subfolder names encountered.");
+    }
 }

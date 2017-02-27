@@ -1,5 +1,6 @@
-package classes;
+package builders;
 
+import classes.PhotoFile;
 import enums.FileType;
 
 public final class PhotoFileBuilder {

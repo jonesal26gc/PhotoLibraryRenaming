@@ -1,4 +1,7 @@
-package classes;
+package builders;
+
+import classes.PhotoFolder;
+import classes.PhotoSubFolder;
 
 import java.util.ArrayList;
 
