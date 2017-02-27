@@ -20,7 +20,7 @@ public class PhotoSubFolder {
     private static final char CLOSE_SQUARE_BRACKET = ']';
     private static final String EMPTY_STRING = "";
     private static final char FULL_STOP = '.';
-    private static final String REVISED_FOLDER_NAME = "D:\\Family XXXXX Library - Revised Copy";
+    private static final String REVISED_FOLDER_NAME = "D:\\Family XXXXX Library - Revised Version";
     private String folderName;
     private String subFolderName;
     private boolean originalSubFolderNameFormat;
@@ -39,16 +39,6 @@ public class PhotoSubFolder {
             formatNewSubFolderName(subFolderName);
         }
         buildListOfPhotoFiles();
-    }
-
-    public PhotoSubFolder(String folderName, String subFolderName, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFilesInFileCategory, String revisedSubFolderName) {
-        this.folderName = folderName;
-        this.subFolderName = subFolderName;
-        this.originalSubFolderNameFormat = originalSubFolderNameFormat;
-        this.newSubFolderNameFormat = newSubFolderNameFormat;
-        this.photoFiles = photoFiles;
-        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
-        this.revisedSubFolderName = revisedSubFolderName;
     }
 
     private void checkThatItIsFolder() {
@@ -88,18 +78,6 @@ public class PhotoSubFolder {
         for (File file : files) {
             photoFiles.add(createPhotoFile(file.getName()));
         }
-    }
-
-    public HashMap<FileType, Integer> getPhotoFilesByFileTypeSubTotals() {
-        HashMap<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
-        for (PhotoFile photoFile : photoFiles) {
-            if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
-                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
-            } else {
-                summaryOfFileTypes.put(photoFile.getFileType(), 1);
-            }
-        }
-        return summaryOfFileTypes;
     }
 
     private String getCenturyAndYear(String subFolderName) {
@@ -178,23 +156,62 @@ public class PhotoSubFolder {
         return filename.substring(filename.indexOf(FULL_STOP));
     }
 
+    public PhotoSubFolder(String folderName, String subFolderName, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFilesInFileCategory, String revisedSubFolderName) {
+        this.folderName = folderName;
+        this.subFolderName = subFolderName;
+        this.originalSubFolderNameFormat = originalSubFolderNameFormat;
+        this.newSubFolderNameFormat = newSubFolderNameFormat;
+        this.photoFiles = photoFiles;
+        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
+        this.revisedSubFolderName = revisedSubFolderName;
+    }
+
+    public HashMap<FileType, Integer> getPhotoFilesByFileTypeSubTotals() {
+        HashMap<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
+        for (PhotoFile photoFile : photoFiles) {
+            if (summaryOfFileTypes.containsKey(photoFile.getFileType())) {
+                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) + 1);
+            } else {
+                summaryOfFileTypes.put(photoFile.getFileType(), 1);
+            }
+        }
+        return summaryOfFileTypes;
+    }
+
     public void createRevisedFolderStructure() {
         for (Map.Entry<FileCategory, Integer> fileCategory : countOfFilesInFileCategory.entrySet()) {
-            createRevisedSubFolder(REVISED_FOLDER_NAME.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName()));
+            String revisedFolderName = REVISED_FOLDER_NAME.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName());
+            createRevisedFolder(revisedFolderName);
+            createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
         }
     }
 
-    public void createRevisedSubFolder(String revisedFolderName) {
+    private void createRevisedFolder(String revisedFolderName) {
         File folder = new File(revisedFolderName);
         if (folder.exists()) {
-            if (!folder.delete()) {
-                throw new RuntimeException("Error - unable to delete new folder '" + revisedFolderName + "'.");
-            }
+            deleteRevisedFolderAndSubFolders(revisedFolderName, folder);
         }
         if (!folder.mkdir()) {
             throw new RuntimeException("Error - unable to create new folder '" + revisedFolderName + "'.");
         }
+    }
 
+    private void deleteRevisedFolderAndSubFolders(String revisedFolderName, File folder) {
+        for (File subFolder : folder.listFiles()) {
+            if (subFolder.isDirectory()) {
+                for (File file : subFolder.listFiles()) {
+                    file.delete();
+                }
+            }
+            subFolder.delete();
+            System.out.println("Deleting sub-folder: " + subFolder.getPath());
+        }
+        if (!folder.delete()) {
+            throw new RuntimeException("Error - unable to delete new folder '" + revisedFolderName + "'.");
+        }
+    }
+
+    private void createRevisedSubFolder(String revisedFolderName, String revisedSubFolderName) {
         File subFolder = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName));
         if (!subFolder.exists()) {
             if (!subFolder.mkdir()) {
@@ -203,7 +220,7 @@ public class PhotoSubFolder {
         }
     }
 
-    public void copyFileToRevisedSubFolder(String revisedFolderName) {
+    public void copyRevisedFileToRevisedSubFolder(String revisedFolderName) {
         for (PhotoFile photoFile : photoFiles) {
             if (photoFile.getFileType().getFileCategory().isRetainFile()) {
                 try {

@@ -101,7 +101,7 @@ public class PhotoSubFolderShould {
                 .build();
 
         //System.out.println(photoSubFolder.toString());
-        photoSubFolder.copyFileToRevisedSubFolder("D:\\Family Photo Library - Revised Copy");
+        photoSubFolder.copyRevisedFileToRevisedSubFolder("D:\\Family Photo Library - Revised Copy");
     }
 
 }
