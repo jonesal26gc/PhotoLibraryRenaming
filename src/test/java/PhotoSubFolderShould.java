@@ -71,7 +71,7 @@ public class PhotoSubFolderShould {
                 .withRevisedSubFolderName("revisedSubFolderName")
                 .withCountOfFileCategories(countOfFileCategories)
                 .build();
-        photoSubFolder.createRevisedFolderStructure();
+        photoSubFolder.createRevisedFolderStructure("D:\\New XXXXX folder - Revised Version");
     }
 
     @Test
@@ -103,7 +103,7 @@ public class PhotoSubFolderShould {
                 .build();
 
         //System.out.println(photoSubFolder.toString());
-        photoSubFolder.copyRevisedFileToRevisedSubFolder("D:\\Family Photo Library - Revised Copy");
+        photoSubFolder.copyRevisedFileToRevisedSubFolder("D:\\New XXXXX folder - Revised Version");
     }
 
 }

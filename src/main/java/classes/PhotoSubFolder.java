@@ -20,7 +20,6 @@ public class PhotoSubFolder {
     private static final char CLOSE_SQUARE_BRACKET = ']';
     private static final String EMPTY_STRING = "";
     private static final char FULL_STOP = '.';
-    private static final String REVISED_FOLDER_NAME = "D:\\Family XXXXX Library - Revised Version";
     private String folderName;
     private String subFolderName;
     private boolean originalSubFolderNameFormat;
@@ -30,6 +29,7 @@ public class PhotoSubFolder {
     private Map<FileCategory, Integer> countOfFilesInFileCategory = new HashMap<FileCategory, Integer>();
 
     private String revisedSubFolderName;
+
     public PhotoSubFolder(String folderName, String subFolderName) {
         this.folderName = folderName;
         this.subFolderName = subFolderName;
@@ -178,36 +178,24 @@ public class PhotoSubFolder {
         return summaryOfFileTypes;
     }
 
-    public void createRevisedFolderStructure() {
+    public void createRevisedFolderStructure(String revisedFolderNameTemplate) {
         for (Map.Entry<FileCategory, Integer> fileCategory : countOfFilesInFileCategory.entrySet()) {
-            String revisedFolderName = REVISED_FOLDER_NAME.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName());
-            createRevisedFolder(revisedFolderName);
-            createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
+            if (!fileCategory.getKey().getLibraryName().equals("")) {
+                String revisedFolderName = revisedFolderNameTemplate.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName());
+                createRevisedFolder(revisedFolderName);
+                createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
+            }
         }
     }
 
     private void createRevisedFolder(String revisedFolderName) {
         File folder = new File(revisedFolderName);
-        if (folder.exists()) {
-            deleteRevisedFolderAndSubFolders(revisedFolderName, folder);
-        }
-        if (!folder.mkdir()) {
-            throw new RuntimeException("Error - unable to create new folder '" + revisedFolderName + "'.");
-        }
-    }
-
-    private void deleteRevisedFolderAndSubFolders(String revisedFolderName, File folder) {
-        for (File subFolder : folder.listFiles()) {
-            if (subFolder.isDirectory()) {
-                for (File file : subFolder.listFiles()) {
-                    file.delete();
-                }
+        if (!folder.exists()) {
+            if (!folder.mkdir()) {
+                throw new RuntimeException("Error - unable to create new folder '" + revisedFolderName + "'.");
+            } else {
+                System.out.println("Creating folder: " + folder.getPath());
             }
-            subFolder.delete();
-            System.out.println("Deleting sub-folder: " + subFolder.getPath());
-        }
-        if (!folder.delete()) {
-            throw new RuntimeException("Error - unable to delete new folder '" + revisedFolderName + "'.");
         }
     }
 
@@ -216,15 +204,18 @@ public class PhotoSubFolder {
         if (!subFolder.exists()) {
             if (!subFolder.mkdir()) {
                 throw new RuntimeException("Error - unable to create new sub-folder '" + revisedSubFolderName + "'.");
+            } else {
+                System.out.println("Creating sub-folder: " + subFolder.getPath());
             }
         }
     }
 
-    public void copyRevisedFileToRevisedSubFolder(String revisedFolderName) {
+    public void copyRevisedFileToRevisedSubFolder(String revisedFolderNameTemplate) {
         for (PhotoFile photoFile : photoFiles) {
             if (photoFile.getFileType().getFileCategory().isRetainFile()) {
                 try {
                     File file = new File(folderName.concat(SLASH_DELIMITER).concat(subFolderName).concat(SLASH_DELIMITER).concat(photoFile.getFilename()));
+                    String revisedFolderName = revisedFolderNameTemplate.replaceFirst("XXXXX", photoFile.getFileType().getFileCategory().getLibraryName());
                     File newFile = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName).concat(SLASH_DELIMITER).concat(photoFile.getRevisedFilename()));
                     Files.copy(file.toPath(), newFile.toPath(), REPLACE_EXISTING);
                 } catch (Exception ex) {

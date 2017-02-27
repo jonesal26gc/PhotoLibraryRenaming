@@ -45,7 +45,7 @@ public class PhotoFolderShould {
         HashMap<FileType, Integer> totals = photoFolder.getPhotoFilesByFileTypeTotals();
 
         // then
-        photoFolder.displayFolderSummary();
+        photoFolder.displayFolderAndSubFolderSummary();
         assertThat(totals.size(),is(2));
     }
 
