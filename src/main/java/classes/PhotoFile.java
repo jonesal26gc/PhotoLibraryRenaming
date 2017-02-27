@@ -9,7 +9,7 @@ public class PhotoFile {
     private FileType fileType;
     private String revisedFilename;
 
-    public PhotoFile(File file){
+    public PhotoFile(File file) {
         this.file = file;
         this.revisedFilename = file.getName();
         this.fileType = FileType.findFileTypeFromFilename(file.getName());

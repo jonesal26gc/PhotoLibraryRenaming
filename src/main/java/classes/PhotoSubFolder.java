@@ -20,30 +20,22 @@ public class PhotoSubFolder {
     private static final char CLOSE_SQUARE_BRACKET = ']';
     private static final String EMPTY_STRING = "";
     private static final char FULL_STOP = '.';
-    private File file;
+    private File subFolder;
     private boolean originalSubFolderNameFormat;
     private boolean newSubFolderNameFormat;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
     private Map<FileCategory, Integer> countOfFilesInFileCategory = new HashMap<FileCategory, Integer>();
     private String revisedSubFolderName;
+    private int countOfMisplacedSubFolders = 0;
 
-    public PhotoSubFolder(File file) {
-        this.file = file;
-        this.revisedSubFolderName = file.getName();
-        determineSubFolderNameFormatIndicators(file.getName());
+    public PhotoSubFolder(File subFolder) {
+        this.subFolder = subFolder;
+        this.revisedSubFolderName = subFolder.getName();
+        determineSubFolderNameFormatIndicators(subFolder.getName());
         if (isOriginalSubFolderNameFormat()) {
-            formatNewSubFolderName(file.getName());
+            formatNewSubFolderName(subFolder.getName());
         }
-        buildListOfPhotoFiles();
-    }
-
-    public PhotoSubFolder(File file, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFilesInFileCategory, String revisedSubFolderName) {
-        this.file = file;
-        this.originalSubFolderNameFormat = originalSubFolderNameFormat;
-        this.newSubFolderNameFormat = newSubFolderNameFormat;
-        this.photoFiles = photoFiles;
-        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
-        this.revisedSubFolderName = revisedSubFolderName;
+        buildListOfPhotoFiles(subFolder);
     }
 
     private void determineSubFolderNameFormatIndicators(String subFolderName) {
@@ -70,11 +62,13 @@ public class PhotoSubFolder {
                 + SPACE).concat(getSubjectText(subFolderName));
     }
 
-    private void buildListOfPhotoFiles() {
-        File[] files = file.listFiles();
-        for (File photo : files) {
+    private void buildListOfPhotoFiles(File subFolder) {
+        for (File photo : subFolder.listFiles()) {
             if (!photo.isDirectory()) {
                 photoFiles.add(allocatePhotoFile(photo));
+            } else {
+                System.out.println("* Warning - Non standard file '" + subFolder.getPath() + "' encountered.");
+                countOfMisplacedSubFolders++;
             }
         }
     }
@@ -154,6 +148,15 @@ public class PhotoSubFolder {
         return filename.substring(filename.indexOf(FULL_STOP));
     }
 
+    public PhotoSubFolder(File subFolder, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFilesInFileCategory, String revisedSubFolderName) {
+        this.subFolder = subFolder;
+        this.originalSubFolderNameFormat = originalSubFolderNameFormat;
+        this.newSubFolderNameFormat = newSubFolderNameFormat;
+        this.photoFiles = photoFiles;
+        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
+        this.revisedSubFolderName = revisedSubFolderName;
+    }
+
     public HashMap<FileType, Integer> getPhotoFilesByFileTypeSubTotals() {
         HashMap<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
         for (PhotoFile photoFile : photoFiles) {
@@ -180,9 +183,9 @@ public class PhotoSubFolder {
         File folder = new File(revisedFolderName);
         if (!folder.exists()) {
             if (!folder.mkdir()) {
-                throw new RuntimeException("Error - unable to create new folder '" + revisedFolderName + "'.");
+                throw new RuntimeException("Error - unable to create new subFolder '" + revisedFolderName + "'.");
             } else {
-                System.out.println("Creating folder: " + folder.getPath());
+                System.out.println("Creating subFolder: " + folder.getPath());
             }
         }
     }
@@ -191,9 +194,9 @@ public class PhotoSubFolder {
         File subFolder = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName));
         if (!subFolder.exists()) {
             if (!subFolder.mkdir()) {
-                throw new RuntimeException("Error - unable to create new sub-folder '" + revisedSubFolderName + "'.");
+                throw new RuntimeException("Error - unable to create new sub-subFolder '" + revisedSubFolderName + "'.");
             } else {
-                System.out.println("Creating sub-folder: " + subFolder.getPath());
+                System.out.println("Creating sub-subFolder: " + subFolder.getPath());
             }
         }
     }
@@ -231,7 +234,7 @@ public class PhotoSubFolder {
     @Override
     public String toString() {
         return "PhotoSubFolder{" +
-                "file=" + file +
+                "subFolder=" + subFolder +
                 ", originalSubFolderNameFormat=" + originalSubFolderNameFormat +
                 ", newSubFolderNameFormat=" + newSubFolderNameFormat +
                 ", photoFiles=" + photoFiles +
@@ -240,7 +243,11 @@ public class PhotoSubFolder {
                 '}';
     }
 
-    public File getFile() {
-        return file;
+    public File getSubFolder() {
+        return subFolder;
+    }
+
+    public int getCountOfMisplacedSubFolders() {
+        return countOfMisplacedSubFolders;
     }
 }

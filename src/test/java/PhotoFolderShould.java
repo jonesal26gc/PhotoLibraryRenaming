@@ -18,15 +18,15 @@ public class PhotoFolderShould {
     @Test
     public void
     check_for_folder() {
-        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().withFile(new File("D:\\")).build();
-        photoFolder.checkThatItIsFolder();
+        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().build();
+        photoFolder.checkThatItIsFolder(new File("D:\\"));
     }
 
     @Test(expected = RuntimeException.class)
     public void
     check_for_not_folder() {
-        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().withFile(new File("D:\\A")).build();
-        photoFolder.checkThatItIsFolder();
+        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().build();
+        photoFolder.checkThatItIsFolder(new File("D:\\A"));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class PhotoFolderShould {
 
         // then
         for (PhotoSubFolder photoSubFolder : photoFolder.getPhotoSubFolders()) {
-            System.out.println(photoSubFolder.getFile().getPath());
+            System.out.println(photoSubFolder.getSubFolder().getPath());
             for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
                 System.out.println(photoFile.getFile().getName());
                 if (photoFile.getRevisedFilename() != null) {

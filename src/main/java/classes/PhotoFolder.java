@@ -2,6 +2,7 @@ package classes;
 
 import enums.FileCategory;
 import enums.FileType;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,34 +11,77 @@ import java.util.Map;
 public class PhotoFolder {
     public static final String NEW_LINE = "\n";
     public static final String REVISED_FOLDER_NAME_TEMPLATE = "D:\\Family XXXXX Library - Revised Folders";
-    private File file;
+    private File folder;
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
+    private int countOfMisplacedSubFolders = 0;
+    private int countOfMisplacedFiles = 0;
 
-    public PhotoFolder(File file) {
-        this.file = file;
+    public PhotoFolder(File folder) {
+        this.folder = folder;
 
-        checkThatItIsFolder(file);
-        buildListOfSubFolders(file);
+        checkThatItIsFolder(folder);
+        buildListOfSubFolders(folder);
         displayFolderAndSubFolderSummary();
     }
 
-    public PhotoFolder(File file, ArrayList<PhotoSubFolder> photoSubFolders) {
-        this.file = file;
-        this.photoSubFolders = photoSubFolders;
-    }
-
-    public void checkThatItIsFolder(File file) {
-        if (!file.isDirectory()) {
-            throw new RuntimeException("Primary Photo Library '" + file.getPath() + "'is not a folder");
+    public void checkThatItIsFolder(File folder) {
+        if (!folder.isDirectory()) {
+            throw new RuntimeException("Primary Photo Library '" + folder.getPath() + "'is not a folder");
         }
     }
 
-    public void buildListOfSubFolders(File file) {
-        File[] subFolders = file.listFiles();
+    public void buildListOfSubFolders(File folder) {
+        File[] subFolders = folder.listFiles();
         for (File subFolder : subFolders) {
             if (subFolder.isDirectory()) {
                 photoSubFolders.add(new PhotoSubFolder(subFolder));
+            } else {
+                System.out.println("* Warning - Non Sub-folder '" + folder.getPath() + "' encountered.");
+                countOfMisplacedFiles++;
             }
+        }
+    }
+
+    public void displayFolderAndSubFolderSummary() {
+
+        System.out.println("Photo folder renaming utility");
+        System.out.println("===========================");
+
+        System.out.println(NEW_LINE + "Folder Name: " + folder.getName());
+        for (PhotoSubFolder photoSubFolder : photoSubFolders) {
+            System.out.println(NEW_LINE + "    Sub-Folder Name: " + photoSubFolder.getSubFolder().getName());
+            for (Map.Entry<FileType, Integer> fileType : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
+                System.out.println(String.format("      % 4d folder(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
+            }
+            for (Map.Entry<FileCategory, Integer> fileCategory : photoSubFolder.getCountOfFilesInFileCategory().entrySet()) {
+                System.out.println(String.format("              % 4d folder(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
+            }
+            countOfMisplacedSubFolders += photoSubFolder.getCountOfMisplacedSubFolders();
+        }
+        System.out.println(NEW_LINE + "Grand Totals");
+        for (Map.Entry<FileType, Integer> fileType : getPhotoFilesByFileTypeTotals().entrySet()) {
+            System.out.println(String.format("% 5d folder(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
+        }
+        for (Map.Entry<FileCategory, Integer> fileCategory : getPhotoFilesByFileCategoryTotals().entrySet()) {
+            System.out.println(String.format("          % 5d folder(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
+        }
+        if (countOfMisplacedFiles > 0 | countOfMisplacedSubFolders > 0) {
+            if (countOfMisplacedSubFolders > 0) {
+                System.out.println(NEW_LINE + "* Warning * There were " + countOfMisplacedSubFolders + " misplaced sub-folders encountered.");
+            }
+            if (countOfMisplacedFiles > 0) {
+                System.out.println(NEW_LINE + "* Warning * There were " + countOfMisplacedFiles + " misplaced files encountered.");
+            }
+            sleepForAMoment();
+            throw new RuntimeException("* Error * Run aborted due to previous exceptions.");
+        }
+    }
+
+    private void sleepForAMoment() {
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -69,35 +113,16 @@ public class PhotoFolder {
         return summaryOfFileCategories;
     }
 
+    public PhotoFolder(File folder, ArrayList<PhotoSubFolder> photoSubFolders) {
+        this.folder = folder;
+        this.photoSubFolders = photoSubFolders;
+    }
+
     public ArrayList<PhotoSubFolder> getPhotoSubFolders() {
         return photoSubFolders;
     }
 
-    public void displayFolderAndSubFolderSummary() {
-
-        System.out.println("Photo file renaming utility");
-        System.out.println("===========================");
-
-        System.out.println(NEW_LINE + "Folder Name: " + file);
-        for (PhotoSubFolder photoSubFolder : photoSubFolders) {
-            System.out.println(NEW_LINE + "    Sub-Folder Name: " + photoSubFolder.getFile().getName());
-            for (Map.Entry<FileType, Integer> fileType : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
-                System.out.println(String.format("      % 4d file(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
-            }
-            for (Map.Entry<FileCategory, Integer> fileCategory : photoSubFolder.getCountOfFilesInFileCategory().entrySet()) {
-                System.out.println(String.format("              % 4d file(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
-            }
-        }
-        System.out.println(NEW_LINE + "Grand Totals");
-        for (Map.Entry<FileType, Integer> fileType : getPhotoFilesByFileTypeTotals().entrySet()) {
-            System.out.println(String.format("% 5d file(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
-        }
-        for (Map.Entry<FileCategory, Integer> fileCategory : getPhotoFilesByFileCategoryTotals().entrySet()) {
-            System.out.println(String.format("          % 5d file(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
-        }
-    }
-
-    public void update() {
+    public void doUpdatesToFolder() {
         System.out.println(NEW_LINE + "Performing updates ........");
         for (Map.Entry<FileCategory, Integer> fileCategory : getPhotoFilesByFileCategoryTotals().entrySet()) {
             String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName());
@@ -131,7 +156,7 @@ public class PhotoFolder {
     @Override
     public String toString() {
         return "PhotoFolder{" +
-                "file=" + file +
+                "folder=" + folder +
                 ", photoSubFolders=" + photoSubFolders +
                 '}';
     }
