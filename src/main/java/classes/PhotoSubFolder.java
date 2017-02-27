@@ -26,9 +26,10 @@ public class PhotoSubFolder {
     private boolean originalSubFolderNameFormat;
     private boolean newSubFolderNameFormat;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
-    private Map<FileCategory, Integer> countOfFilesInFileCategory = new HashMap<FileCategory, Integer>();
-    private String revisedSubFolderName;
 
+    private Map<FileCategory, Integer> countOfFilesInFileCategory = new HashMap<FileCategory, Integer>();
+
+    private String revisedSubFolderName;
     public PhotoSubFolder(String folderName, String subFolderName) {
         this.folderName = folderName;
         this.subFolderName = subFolderName;
@@ -76,7 +77,7 @@ public class PhotoSubFolder {
         File subFolder = new File(folderName.concat(SLASH_DELIMITER).concat(subFolderName));
         File[] files = subFolder.listFiles();
         for (File file : files) {
-            photoFiles.add(createPhotoFile(file.getName()));
+            photoFiles.add(allocatePhotoFile(file.getName()));
         }
     }
 
@@ -100,7 +101,7 @@ public class PhotoSubFolder {
         return subFolderName.substring(21);
     }
 
-    private PhotoFile createPhotoFile(String filename) {
+    private PhotoFile allocatePhotoFile(String filename) {
         PhotoFile photoFile = new PhotoFile(filename);
         int newFileSequence = incrementCountOfFilesInFileCategory(photoFile.getFileType().getFileCategory());
         if (photoFile.getFileType().getFileCategory().isRenameFile() &
@@ -121,7 +122,6 @@ public class PhotoSubFolder {
     }
 
     public String renamePhotoFile(String filename, int newSequenceNumber) {
-
         return getTimeStampFromNewSubFolderName()
                 .concat(formatFileSequenceNumber(newSequenceNumber))
                 .concat(getSubjectTextFromNewSubFolderName())
@@ -232,10 +232,6 @@ public class PhotoSubFolder {
                 }
             }
         }
-    }
-
-    public String getFolderName() {
-        return folderName;
     }
 
     public String getSubFolderName() {

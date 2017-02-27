@@ -42,9 +42,7 @@ public class PhotoFolderShould {
         HashMap<FileType, Integer> totals = photoFolder.getPhotoFilesByFileTypeTotals();
 
         // then
-        for (Map.Entry<FileType,Integer> i : totals.entrySet()){
-            System.out.println(i.getKey().name() + "=" + i.getValue());
-        }
+        photoFolder.displayFolderSummary();
         assertThat(totals.size(),is(2));
     }
 
