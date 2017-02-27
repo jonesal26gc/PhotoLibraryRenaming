@@ -4,10 +4,15 @@ import classes.PhotoFolder;
 
 public class PhotoRenameApp {
     public static void main(String[] args) {
-        String PhotoDirectoryName = "D:\\Family Photo Library";
-        boolean isUpdate = true;
+        if (args.length==0) {
+            run(new PhotoFolder("D:\\Family Photo Library"),true);
+        } else {
+            run(new PhotoFolder(args[0]),translateUpdateParameter(args[1]));
+        }
+    }
 
-        run(new PhotoFolder(PhotoDirectoryName),isUpdate);
+    private static boolean translateUpdateParameter(String arg) {
+        return arg.equals("Y");
     }
 
     private static void run(PhotoFolder photoFolder, boolean isUpdate) {
