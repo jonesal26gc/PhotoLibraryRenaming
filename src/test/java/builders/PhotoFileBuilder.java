@@ -3,9 +3,11 @@ package builders;
 import classes.PhotoFile;
 import enums.FileType;
 
+import java.io.File;
+
 public final class PhotoFileBuilder {
     private String revisedFilename;
-    private String filename;
+    private File file;
     private FileType fileType;
 
     private PhotoFileBuilder() {
@@ -20,8 +22,8 @@ public final class PhotoFileBuilder {
         return this;
     }
 
-    public PhotoFileBuilder withFilename(String filename) {
-        this.filename = filename;
+    public PhotoFileBuilder withFile(File file) {
+        this.file = file;
         return this;
     }
 
@@ -31,7 +33,7 @@ public final class PhotoFileBuilder {
     }
 
     public PhotoFile build() {
-        PhotoFile photoFile = new PhotoFile(filename, fileType, revisedFilename);
+        PhotoFile photoFile = new PhotoFile(file, fileType, revisedFilename);
         return photoFile;
     }
 }

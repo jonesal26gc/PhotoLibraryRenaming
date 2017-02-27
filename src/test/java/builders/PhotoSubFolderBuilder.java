@@ -4,17 +4,17 @@ import classes.PhotoFile;
 import classes.PhotoSubFolder;
 import enums.FileCategory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class PhotoSubFolderBuilder {
-    private String folderName;
-    private String subFolderName;
+    private File file;
     private boolean originalSubFolderNameFormat;
     private boolean newSubFolderNameFormat;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
-    private Map<FileCategory, Integer> countOfFileCategories = new HashMap<FileCategory, Integer>();
+    private Map<FileCategory, Integer> countOfFilesInFileCategory = new HashMap<FileCategory, Integer>();
     private String revisedSubFolderName;
 
     private PhotoSubFolderBuilder() {
@@ -24,13 +24,8 @@ public final class PhotoSubFolderBuilder {
         return new PhotoSubFolderBuilder();
     }
 
-    public PhotoSubFolderBuilder withFolderName(String folderName) {
-        this.folderName = folderName;
-        return this;
-    }
-
-    public PhotoSubFolderBuilder withSubFolderName(String subFolderName) {
-        this.subFolderName = subFolderName;
+    public PhotoSubFolderBuilder withFile(File file) {
+        this.file = file;
         return this;
     }
 
@@ -49,8 +44,8 @@ public final class PhotoSubFolderBuilder {
         return this;
     }
 
-    public PhotoSubFolderBuilder withCountOfFileCategories(Map<FileCategory, Integer> countOfFileCategories) {
-        this.countOfFileCategories = countOfFileCategories;
+    public PhotoSubFolderBuilder withCountOfFilesInFileCategory(Map<FileCategory, Integer> countOfFilesInFileCategory) {
+        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
         return this;
     }
 
@@ -60,7 +55,7 @@ public final class PhotoSubFolderBuilder {
     }
 
     public PhotoSubFolder build() {
-        PhotoSubFolder photoSubFolder = new PhotoSubFolder(folderName, subFolderName, originalSubFolderNameFormat, newSubFolderNameFormat, photoFiles, countOfFileCategories, revisedSubFolderName);
+        PhotoSubFolder photoSubFolder = new PhotoSubFolder(file, originalSubFolderNameFormat, newSubFolderNameFormat, photoFiles, countOfFilesInFileCategory, revisedSubFolderName);
         return photoSubFolder;
     }
 }

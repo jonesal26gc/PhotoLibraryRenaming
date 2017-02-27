@@ -3,10 +3,11 @@ package builders;
 import classes.PhotoFolder;
 import classes.PhotoSubFolder;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public final class PhotoFolderBuilder {
-    private String folderName;
+    private File file;
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
 
     private PhotoFolderBuilder() {
@@ -16,8 +17,8 @@ public final class PhotoFolderBuilder {
         return new PhotoFolderBuilder();
     }
 
-    public PhotoFolderBuilder withFolderName(String folderName) {
-        this.folderName = folderName;
+    public PhotoFolderBuilder withFile(File file) {
+        this.file = file;
         return this;
     }
 
@@ -27,7 +28,7 @@ public final class PhotoFolderBuilder {
     }
 
     public PhotoFolder build() {
-        PhotoFolder photoFolder = new PhotoFolder(folderName, photoSubFolders);
+        PhotoFolder photoFolder = new PhotoFolder(file, photoSubFolders);
         return photoFolder;
     }
 }

@@ -4,6 +4,8 @@ import builders.PhotoSubFolderBuilder;
 import classes.*;
 import enums.FileType;
 import org.junit.Test;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +18,14 @@ public class PhotoFolderShould {
     @Test
     public void
     check_for_folder() {
-        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().withFolderName("D:\\").build();
+        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().withFile(new File("D:\\")).build();
         photoFolder.checkThatItIsFolder();
     }
 
     @Test(expected = RuntimeException.class)
     public void
     check_for_not_folder() {
-        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().withFolderName("D:\\A").build();
+        PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().withFile(new File("D:\\A")).build();
         photoFolder.checkThatItIsFolder();
     }
 
@@ -31,12 +33,14 @@ public class PhotoFolderShould {
     public void
     provide_totals_by_fileType() {
         // given
-        PhotoFile photoFile1 = PhotoFileBuilder.aPhotoFile().withFilename("a").withFileType(FileType.BMP).build();
-        PhotoFile photoFile2 = PhotoFileBuilder.aPhotoFile().withFilename("a").withFileType(FileType.DOC).build();
+        PhotoFile photoFile1 = PhotoFileBuilder.aPhotoFile().withFile(new File("a")).withFileType(FileType.BMP).build();
+        PhotoFile photoFile2 = PhotoFileBuilder.aPhotoFile().withFile(new File("a")).withFileType(FileType.DOC).build();
         ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
         photoFiles.add(photoFile1);
         photoFiles.add(photoFile2);
-        PhotoSubFolder photoSubFolder1 = PhotoSubFolderBuilder.aPhotoSubFolder().withPhotoFiles(photoFiles).build();
+        PhotoSubFolder photoSubFolder1 = PhotoSubFolderBuilder.aPhotoSubFolder()
+                .withPhotoFiles(photoFiles)
+                .build();
         ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
         photoSubFolders.add(photoSubFolder1);
         PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().withPhotoSubFolders(photoSubFolders).build();
@@ -53,13 +57,13 @@ public class PhotoFolderShould {
     public void
     contain_a_list_of_sub_folders() {
         // given
-        PhotoFolder photoFolder = new PhotoFolder("D:\\Family Photo Library");
+        PhotoFolder photoFolder = new PhotoFolder(new File("D:\\Family Photo Library"));
 
         // then
         for (PhotoSubFolder photoSubFolder : photoFolder.getPhotoSubFolders()) {
-            System.out.println(photoSubFolder.getSubFolderName());
+            System.out.println(photoSubFolder.getFile().getPath());
             for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
-                System.out.println(photoFile.getFilename());
+                System.out.println(photoFile.getFile().getName());
                 if (photoFile.getRevisedFilename() != null) {
                     System.out.println(photoFile.getRevisedFilename());
                 }
