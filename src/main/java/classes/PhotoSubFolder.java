@@ -67,7 +67,7 @@ public class PhotoSubFolder {
             if (!photo.isDirectory()) {
                 photoFiles.add(allocatePhotoFile(photo));
             } else {
-                System.out.println("* Warning - Non standard file '" + subFolder.getPath() + "' encountered.");
+                System.out.println("* Warning - Non standard file '" + photo.getPath() + "' encountered.");
                 countOfMisplacedSubFolders++;
             }
         }
