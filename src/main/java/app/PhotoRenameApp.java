@@ -7,7 +7,7 @@ import java.io.File;
 public class PhotoRenameApp {
     public static void main(String[] args) {
         if (args.length==0) {
-            run(new PhotoFolder(new File("D:\\Full Photo Library")),true);
+            run(new PhotoFolder(new File("D:\\Family Photo Library")),true);
         } else {
             run(new PhotoFolder(new File(args[0])),translateUpdateParameter(args[1]));
         }
