@@ -23,7 +23,7 @@ public class PhotoFolder {
         checkThatItIsFolder(folder);
         buildListOfSubFolders(folder);
         displayFolderAndSubFolderSummary();
-        checkForDuplicatedPhotoFiles();
+        checkForDuplicatedPhotoFilesAcrossAllSubFolders();
     }
 
     public void checkThatItIsFolder(File folder) {
@@ -79,7 +79,7 @@ public class PhotoFolder {
         }
     }
 
-    private void checkForDuplicatedPhotoFiles() {
+    private void checkForDuplicatedPhotoFilesAcrossAllSubFolders() {
         int countOfDuplicatePhotoFiles = 0;
         TreeMap<String, File> checkSumToFileMappings = new TreeMap<String, File>();
         System.out.print(NEW_LINE);
@@ -87,8 +87,8 @@ public class PhotoFolder {
             for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
                 if (checkSumToFileMappings.containsKey(photoFile.getCheckSumInHex())) {
                     countOfDuplicatePhotoFiles++;
-                    photoFile.setDuplicateHasBeenFoundElsewhere(true);
-                    System.out.println("Duplicate file: " + photoFile.getNameOfFile());
+                    photoSubFolder.ignoreDuplicatedPhotoFile(photoFile);
+                    System.out.println("* Warning * Duplicated file: '" + photoFile.getNameOfFile() + "' - dropping it.");
                 } else {
                     checkSumToFileMappings.put(photoFile.getCheckSumInHex(), photoFile.getFile());
                 }

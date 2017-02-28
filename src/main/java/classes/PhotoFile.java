@@ -8,6 +8,7 @@ public class PhotoFile {
     private File file;
     private FileType fileType;
     private String revisedFilename;
+    private int sequenceNumber = 0;
     private String checkSumInHex;
     private boolean duplicateHasBeenFoundElsewhere = false;
 
@@ -60,6 +61,14 @@ public class PhotoFile {
 
     public boolean isDuplicateHasBeenFoundElsewhere() {
         return duplicateHasBeenFoundElsewhere;
+    }
+
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     public void setDuplicateHasBeenFoundElsewhere(boolean duplicateHasBeenFoundElsewhere) {

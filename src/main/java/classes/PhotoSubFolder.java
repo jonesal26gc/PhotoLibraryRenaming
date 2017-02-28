@@ -13,6 +13,7 @@ import java.util.Map;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PhotoSubFolder {
+    public static final String FILE_COUNT_TEMPLATE = "{fileCount}";
     private static final char DASH = '-';
     private static final char SPACE = ' ';
     private static final String SLASH_DELIMITER = "\\";
@@ -59,7 +60,10 @@ public class PhotoSubFolder {
                 + SPACE
                 + Month.findAbbreviatedName(getMonth(subFolderName))
                 + getYear(subFolderName)
-                + SPACE).concat(getSubjectText(subFolderName));
+                + SPACE
+                + FILE_COUNT_TEMPLATE
+                + SPACE
+                + getSubjectText(subFolderName));
     }
 
     private void buildListOfPhotoFiles(File subFolder) {
@@ -96,6 +100,7 @@ public class PhotoSubFolder {
     private PhotoFile allocatePhotoFile(File photo) {
         PhotoFile photoFile = new PhotoFile(photo);
         int newFileSequence = incrementCountOfFilesInFileCategory(photoFile.getFileType().getFileCategory());
+        photoFile.setSequenceNumber(newFileSequence);
         if (photoFile.getFileType().getFileCategory().isRenameFile() &
                 isOriginalSubFolderNameFormat()) {
             photoFile.setRevisedFilename(renamePhotoFile(photoFile.getNameOfFile(), newFileSequence));
@@ -170,11 +175,12 @@ public class PhotoSubFolder {
     }
 
     public void createRevisedFolderStructure(String revisedFolderNameTemplate) {
-        for (Map.Entry<FileCategory, Integer> fileCategory : countOfFilesInFileCategory.entrySet()) {
-            if (!fileCategory.getKey().getLibraryName().equals("")) {
-                String revisedFolderName = revisedFolderNameTemplate.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName());
+        for (Map.Entry<FileCategory, Integer> fileCategoryMap : countOfFilesInFileCategory.entrySet()) {
+            if ((!fileCategoryMap.getKey().getLibraryName().equals(""))
+                    & fileCategoryMap.getValue() > 0) {
+                String revisedFolderName = revisedFolderNameTemplate.replaceFirst("XXXXX", fileCategoryMap.getKey().getLibraryName());
                 createRevisedFolder(revisedFolderName);
-                createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
+                createRevisedSubFolder(revisedFolderName, revisedSubFolderName.replace(FILE_COUNT_TEMPLATE, String.format("{%d}", fileCategoryMap.getValue())));
             }
         }
     }
@@ -207,7 +213,11 @@ public class PhotoSubFolder {
                     & (!photoFile.isDuplicateHasBeenFoundElsewhere())) {
                 try {
                     String revisedFolderName = revisedFolderNameTemplate.replaceFirst("XXXXX", photoFile.getFileType().getFileCategory().getLibraryName());
-                    File newFile = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName).concat(SLASH_DELIMITER).concat(photoFile.getRevisedFilename()));
+                    File newFile = new File(revisedFolderName.concat(SLASH_DELIMITER)
+                            .concat(revisedSubFolderName
+                                    .replace(FILE_COUNT_TEMPLATE, String.format("{%d}", countOfFilesInFileCategory.get(photoFile.getFileType().getFileCategory()))))
+                            .concat(SLASH_DELIMITER)
+                            .concat(photoFile.getRevisedFilename().replace(FILE_COUNT_TEMPLATE, "")));
                     Files.copy(photoFile.getFile().toPath(), newFile.toPath(), REPLACE_EXISTING);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -232,6 +242,20 @@ public class PhotoSubFolder {
         return revisedSubFolderName;
     }
 
+    public File getSubFolder() {
+        return subFolder;
+    }
+
+    public int getCountOfMisplacedSubFolders() {
+        return countOfMisplacedSubFolders;
+    }
+
+    public void ignoreDuplicatedPhotoFile(PhotoFile photoFile) {
+        int count = (countOfFilesInFileCategory.get(photoFile.getFileType().getFileCategory()) - 1);
+        countOfFilesInFileCategory.put(photoFile.getFileType().getFileCategory(), count);
+        photoFile.setDuplicateHasBeenFoundElsewhere(true);
+    }
+
     @Override
     public String toString() {
         return "PhotoSubFolder{" +
@@ -242,13 +266,5 @@ public class PhotoSubFolder {
                 ", countOfFilesInFileCategory=" + countOfFilesInFileCategory +
                 ", revisedSubFolderName='" + revisedSubFolderName + '\'' +
                 '}';
-    }
-
-    public File getSubFolder() {
-        return subFolder;
-    }
-
-    public int getCountOfMisplacedSubFolders() {
-        return countOfMisplacedSubFolders;
     }
 }
