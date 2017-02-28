@@ -9,6 +9,7 @@ public class PhotoFile {
     private FileType fileType;
     private String revisedFilename;
     private String checkSumInHex;
+    private boolean duplicateHasBeenFoundElsewhere = false;
 
     public PhotoFile(File file) {
         this.file = file;
@@ -55,5 +56,13 @@ public class PhotoFile {
 
     public void setRevisedFilename(String revisedFilename) {
         this.revisedFilename = revisedFilename;
+    }
+
+    public boolean isDuplicateHasBeenFoundElsewhere() {
+        return duplicateHasBeenFoundElsewhere;
+    }
+
+    public void setDuplicateHasBeenFoundElsewhere(boolean duplicateHasBeenFoundElsewhere) {
+        this.duplicateHasBeenFoundElsewhere = duplicateHasBeenFoundElsewhere;
     }
 }

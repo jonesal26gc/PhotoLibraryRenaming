@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class PhotoFolder {
     public static final String NEW_LINE = "\n";
@@ -22,6 +23,7 @@ public class PhotoFolder {
         checkThatItIsFolder(folder);
         buildListOfSubFolders(folder);
         displayFolderAndSubFolderSummary();
+        checkForDuplicatedPhotoFiles();
     }
 
     public void checkThatItIsFolder(File folder) {
@@ -51,19 +53,19 @@ public class PhotoFolder {
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
             System.out.println(NEW_LINE + "    Sub-Folder Name: " + photoSubFolder.getSubFolder().getName());
             for (Map.Entry<FileType, Integer> fileType : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
-                System.out.println(String.format("      % 4d folder(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
+                System.out.println(String.format("      % 4d file(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
             }
             for (Map.Entry<FileCategory, Integer> fileCategory : photoSubFolder.getCountOfFilesInFileCategory().entrySet()) {
-                System.out.println(String.format("              % 4d folder(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
+                System.out.println(String.format("              % 4d file(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
             }
             countOfMisplacedSubFolders += photoSubFolder.getCountOfMisplacedSubFolders();
         }
         System.out.println(NEW_LINE + "Grand Totals");
         for (Map.Entry<FileType, Integer> fileType : getPhotoFilesByFileTypeTotals().entrySet()) {
-            System.out.println(String.format("% 5d folder(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
+            System.out.println(String.format("% 5d file(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
         }
         for (Map.Entry<FileCategory, Integer> fileCategory : getPhotoFilesByFileCategoryTotals().entrySet()) {
-            System.out.println(String.format("          % 5d folder(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
+            System.out.println(String.format("          % 5d file(s) of Category '", fileCategory.getValue()) + fileCategory.getKey().name() + "' found.");
         }
         if (countOfMisplacedFiles > 0 | countOfMisplacedSubFolders > 0) {
             if (countOfMisplacedSubFolders > 0) {
@@ -77,12 +79,22 @@ public class PhotoFolder {
         }
     }
 
-    private void sleepForAMoment() {
-        try {
-            Thread.sleep(1000);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    private void checkForDuplicatedPhotoFiles() {
+        int countOfDuplicatePhotoFiles = 0;
+        TreeMap<String, File> checkSumToFileMappings = new TreeMap<String, File>();
+        System.out.print(NEW_LINE);
+        for (PhotoSubFolder photoSubFolder : photoSubFolders) {
+            for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
+                if (checkSumToFileMappings.containsKey(photoFile.getCheckSumInHex())) {
+                    countOfDuplicatePhotoFiles++;
+                    photoFile.setDuplicateHasBeenFoundElsewhere(true);
+                    System.out.println("Duplicate file: " + photoFile.getNameOfFile());
+                } else {
+                    checkSumToFileMappings.put(photoFile.getCheckSumInHex(), photoFile.getFile());
+                }
+            }
         }
+        System.out.println("There were " + countOfDuplicatePhotoFiles + " duplicate(s) found.");
     }
 
     public HashMap<FileType, Integer> getPhotoFilesByFileTypeTotals() {
@@ -92,7 +104,7 @@ public class PhotoFolder {
                 if (summaryOfFileTypes.containsKey(subTotal.getKey())) {
                     summaryOfFileTypes.put(subTotal.getKey(), summaryOfFileTypes.get(subTotal.getKey()) + subTotal.getValue());
                 } else {
-                    summaryOfFileTypes.put(subTotal.getKey(), 1);
+                    summaryOfFileTypes.put(subTotal.getKey(), subTotal.getValue());
                 }
             }
         }
@@ -106,11 +118,19 @@ public class PhotoFolder {
                 if (summaryOfFileCategories.containsKey(subTotal.getKey())) {
                     summaryOfFileCategories.put(subTotal.getKey(), summaryOfFileCategories.get(subTotal.getKey()) + subTotal.getValue());
                 } else {
-                    summaryOfFileCategories.put(subTotal.getKey(), 1);
+                    summaryOfFileCategories.put(subTotal.getKey(), subTotal.getValue());
                 }
             }
         }
         return summaryOfFileCategories;
+    }
+
+    private void sleepForAMoment() {
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public PhotoFolder(File folder, ArrayList<PhotoSubFolder> photoSubFolders) {

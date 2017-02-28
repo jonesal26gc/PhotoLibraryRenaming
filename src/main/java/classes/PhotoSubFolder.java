@@ -203,7 +203,8 @@ public class PhotoSubFolder {
 
     public void copyRevisedFileToRevisedSubFolder(String revisedFolderNameTemplate) {
         for (PhotoFile photoFile : photoFiles) {
-            if (photoFile.getFileType().getFileCategory().isRetainFile()) {
+            if (photoFile.getFileType().getFileCategory().isRetainFile()
+                    & (!photoFile.isDuplicateHasBeenFoundElsewhere())) {
                 try {
                     String revisedFolderName = revisedFolderNameTemplate.replaceFirst("XXXXX", photoFile.getFileType().getFileCategory().getLibraryName());
                     File newFile = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName).concat(SLASH_DELIMITER).concat(photoFile.getRevisedFilename()));
