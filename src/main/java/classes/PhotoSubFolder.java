@@ -267,4 +267,8 @@ public class PhotoSubFolder {
                 ", revisedSubFolderName='" + revisedSubFolderName + '\'' +
                 '}';
     }
+
+    public String getSubFolderName() {
+        return subFolder.getName();
+    }
 }

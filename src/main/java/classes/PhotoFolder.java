@@ -2,16 +2,28 @@ package classes;
 
 import enums.FileCategory;
 import enums.FileType;
+import enums.Month;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 public class PhotoFolder {
     public static final String NEW_LINE = "\n";
     public static final String REVISED_FOLDER_NAME_TEMPLATE = "D:\\Family XXXXX Library - Revised Folders";
+    private static final String SLASH_DELIMITER = "\\";
+    private static final String DASH = "-";
+    private static final String SPACE = " ";
+    private static final String FILE_COUNT_TEMPLATE = "{fileCount}";
+    private static final char OPEN_SQUARE_BRACKET = '[';
+    private static final char CLOSE_SQUARE_BRACKET = ']';
+    private static final String EMPTY_STRING = "";
+    private static final char FULL_STOP = '.';
     private File folder;
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
     private int countOfMisplacedSubFolders = 0;
@@ -171,6 +183,149 @@ public class PhotoFolder {
                 throw new RuntimeException("Error - unable to delete new folder '" + revisedFolderName + "'.");
             }
         }
+    }
+
+    public void subFolderUpdates() {
+
+        for (FileCategory fileCategory : FileCategory.values()) {
+            if (fileCategory.isRetainFile()) {
+                for (PhotoSubFolder photoSubFolder : photoSubFolders) {
+                    if (photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory) > 0) {
+
+                        String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName());
+                        createRevisedFolder(revisedFolderName);
+
+                        String revisedSubFolderName;
+                        if (photoSubFolder.isOriginalSubFolderNameFormat()
+                                & fileCategory.isRenameFile()) {
+                            revisedSubFolderName = formatNewSubFolderName(photoSubFolder.getSubFolderName(), photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory));
+                        } else {
+                            revisedSubFolderName = photoSubFolder.getSubFolder().getName();
+                        }
+                        createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
+
+                        for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
+                            if (photoFile.getFileType().getFileCategory() == fileCategory
+                                    & (!photoFile.isDuplicateHasBeenFoundElsewhere())) {
+                                String revisedPhotoFilename;
+                                if (photoSubFolder.isOriginalSubFolderNameFormat()
+                                        & fileCategory.isRenameFile()) {
+                                    revisedPhotoFilename = renamePhotoFile(revisedSubFolderName, photoFile.getFile().getName(), photoFile.getSequenceNumber());
+                                } else {
+                                    revisedPhotoFilename = photoFile.getFile().getName();
+                                }
+                                copyRevisedFileToRevisedSubFolder(photoFile.getFile(), revisedFolderName, revisedSubFolderName, revisedPhotoFilename);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void createRevisedFolder(String revisedFolderName) {
+        File folder = new File(revisedFolderName);
+        if (!folder.exists()) {
+            if (!folder.mkdir()) {
+                throw new RuntimeException("Error - unable to create new subFolder '" + revisedFolderName + "'.");
+            } else {
+                System.out.println("Creating subFolder: " + folder.getPath());
+            }
+        }
+    }
+
+    private String formatNewSubFolderName(String subFolderName, int fileCount) {
+        return getCenturyAndYear(subFolderName)
+                + DASH
+                + getMonth(subFolderName)
+                + DASH
+                + getDay(subFolderName)
+                + SPACE
+                + Month.findAbbreviatedName(getMonth(subFolderName))
+                + getYear(subFolderName)
+                + SPACE
+                + FILE_COUNT_TEMPLATE.replace(FILE_COUNT_TEMPLATE, String.format("{%d}", fileCount))
+                + SPACE
+                + getSubjectText(subFolderName);
+    }
+
+    private void createRevisedSubFolder(String revisedFolderName, String revisedSubFolderName) {
+        File subFolder = new File(revisedFolderName.concat(SLASH_DELIMITER).concat(revisedSubFolderName));
+        if (!subFolder.exists()) {
+            if (!subFolder.mkdir()) {
+                throw new RuntimeException("Error - unable to create new sub-subFolder '" + revisedSubFolderName + "'.");
+            } else {
+                System.out.println("Creating sub-subFolder: " + subFolder.getPath());
+            }
+        }
+    }
+
+    public String renamePhotoFile(String revisedSubFolderName, String filename, int newSequenceNumber) {
+        return getTimeStampFromNewSubFolderName(revisedSubFolderName)
+                .concat(formatFileSequenceNumber(newSequenceNumber))
+                .concat(getSubjectTextFromNewSubFolderName(revisedSubFolderName))
+                .concat(getCommentFieldFromFilename(filename))
+                .concat(getFileExtensionFromFilename(filename));
+    }
+
+    public void copyRevisedFileToRevisedSubFolder(File photoFile, String revisedFolderName, String revisedSubFolderName, String revisedPhotoFilename) {
+        try {
+            File newFile = new File(revisedFolderName
+                    .concat(SLASH_DELIMITER)
+                    .concat(revisedSubFolderName)
+                    .concat(SLASH_DELIMITER)
+                    .concat(revisedPhotoFilename));
+            Files.copy(photoFile.toPath(), newFile.toPath(), REPLACE_EXISTING);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private String getCenturyAndYear(String subFolderName) {
+        return subFolderName.substring(0, 4);
+    }
+
+    private String getMonth(String subFolderName) {
+        return subFolderName.substring(5, 7);
+    }
+
+    private String getDay(String subFolderName) {
+        return subFolderName.substring(8, 10);
+    }
+
+    private String getYear(String subFolderName) {
+        return subFolderName.substring(2, 4);
+    }
+
+    private String getSubjectText(String subFolderName) {
+        return subFolderName.substring(21);
+    }
+
+    private String getTimeStampFromNewSubFolderName(String revisedSubFolderName) {
+        return revisedSubFolderName.substring(0, 17);
+    }
+
+    private String formatFileSequenceNumber(int newSequenceNumber) {
+        return String.format("#%03d ", newSequenceNumber);
+    }
+
+    private String getSubjectTextFromNewSubFolderName(String revisedSubFolderName) {
+        return revisedSubFolderName.substring(17);
+    }
+
+    private String getCommentFieldFromFilename(String filename) {
+        int commentStartPos = filename.indexOf(OPEN_SQUARE_BRACKET);
+        int commentEndPos = filename.indexOf(CLOSE_SQUARE_BRACKET);
+
+        if (commentStartPos >= 0
+                & commentStartPos < commentEndPos) {
+            return SPACE + filename.substring(commentStartPos, commentEndPos + 1);
+        }
+        return EMPTY_STRING;
+    }
+
+    private String getFileExtensionFromFilename(String filename) {
+        return filename.substring(filename.indexOf(FULL_STOP));
     }
 
     @Override
