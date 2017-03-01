@@ -22,11 +22,4 @@ public class CheckSum {
         byte[] hash = messageDigest.digest();
         return DatatypeConverter.printHexBinary(hash).toUpperCase();
     }
-
-//    public static void main(String argv[]) throws NoSuchAlgorithmException, IOException {
-//        File file = new File("/Users/foo.bar/Documents/file.jar");
-//        String hex = Checksum.generate(file);
-//        System.out.printf("hex=%s\n", hex);
-//    }
-
 }

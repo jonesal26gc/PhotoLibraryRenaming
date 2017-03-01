@@ -2,7 +2,6 @@ package classes;
 
 import enums.FileCategory;
 import enums.FileType;
-import enums.Month;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,25 +22,12 @@ public class PhotoSubFolder {
         buildListOfPhotoFiles(subFolder);
     }
 
-    public PhotoSubFolder(File subFolder, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFilesInFileCategory, int countOfMisplacedSubFolders) {
-        this.subFolder = subFolder;
-        this.originalSubFolderNameFormat = originalSubFolderNameFormat;
-        this.newSubFolderNameFormat = newSubFolderNameFormat;
-        this.photoFiles = photoFiles;
-        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
-        this.countOfMisplacedSubFolders = countOfMisplacedSubFolders;
-    }
-
     private void determineSubFolderNameFormatIndicators(String subFolderName) {
         FormatCheckerForOriginalSubFolderName formatCheckerForOriginalSubFolderName = new FormatCheckerForOriginalSubFolderName();
         originalSubFolderNameFormat = formatCheckerForOriginalSubFolderName.validate(subFolderName);
 
         FormatCheckerForNewSubFolderName formatCheckerForNewSubFolderName = new FormatCheckerForNewSubFolderName();
         newSubFolderNameFormat = formatCheckerForNewSubFolderName.validate(subFolderName);
-    }
-
-    public boolean isOriginalSubFolderNameFormat() {
-        return originalSubFolderNameFormat;
     }
 
     private void buildListOfPhotoFiles(File subFolder) {
@@ -65,6 +51,19 @@ public class PhotoSubFolder {
             countOfFilesInFileCategory.put(fileCategory, 1);
         }
         return countOfFilesInFileCategory.get(fileCategory);
+    }
+
+    public PhotoSubFolder(File subFolder, boolean originalSubFolderNameFormat, boolean newSubFolderNameFormat, ArrayList<PhotoFile> photoFiles, Map<FileCategory, Integer> countOfFilesInFileCategory, int countOfMisplacedSubFolders) {
+        this.subFolder = subFolder;
+        this.originalSubFolderNameFormat = originalSubFolderNameFormat;
+        this.newSubFolderNameFormat = newSubFolderNameFormat;
+        this.photoFiles = photoFiles;
+        this.countOfFilesInFileCategory = countOfFilesInFileCategory;
+        this.countOfMisplacedSubFolders = countOfMisplacedSubFolders;
+    }
+
+    public boolean isOriginalSubFolderNameFormat() {
+        return originalSubFolderNameFormat;
     }
 
     public HashMap<FileType, Integer> getPhotoFilesByFileTypeSubTotals() {

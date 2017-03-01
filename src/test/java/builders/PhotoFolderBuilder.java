@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public final class PhotoFolderBuilder {
     private File folder;
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
+    private int countOfMisplacedSubFolders = 0;
+    private int countOfMisplacedFiles = 0;
 
     private PhotoFolderBuilder() {
     }
@@ -27,8 +29,18 @@ public final class PhotoFolderBuilder {
         return this;
     }
 
+    public PhotoFolderBuilder withCountOfMisplacedSubFolders(int countOfMisplacedSubFolders) {
+        this.countOfMisplacedSubFolders = countOfMisplacedSubFolders;
+        return this;
+    }
+
+    public PhotoFolderBuilder withCountOfMisplacedFiles(int countOfMisplacedFiles) {
+        this.countOfMisplacedFiles = countOfMisplacedFiles;
+        return this;
+    }
+
     public PhotoFolder build() {
-        PhotoFolder photoFolder = new PhotoFolder(folder, photoSubFolders);
+        PhotoFolder photoFolder = new PhotoFolder(folder, photoSubFolders, countOfMisplacedSubFolders, countOfMisplacedFiles);
         return photoFolder;
     }
 }

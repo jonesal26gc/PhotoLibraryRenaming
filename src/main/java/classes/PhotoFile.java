@@ -17,13 +17,6 @@ public class PhotoFile {
         //System.out.println("File: " + file.getName() + " has checksum of: " + checkSumInHex);
     }
 
-    public PhotoFile(File file, FileType fileType, String checkSumInHex, boolean duplicateHasBeenFoundElsewhere) {
-        this.file = file;
-        this.fileType = fileType;
-        this.checkSumInHex = checkSumInHex;
-        this.duplicateHasBeenFoundElsewhere = duplicateHasBeenFoundElsewhere;
-    }
-
     private String setCheckSum(File file) {
         try {
             return CheckSum.generate(file);
@@ -31,6 +24,13 @@ public class PhotoFile {
             ex.printStackTrace();
             return null;
         }
+    }
+
+    public PhotoFile(File file, FileType fileType, String checkSumInHex, boolean duplicateHasBeenFoundElsewhere) {
+        this.file = file;
+        this.fileType = fileType;
+        this.checkSumInHex = checkSumInHex;
+        this.duplicateHasBeenFoundElsewhere = duplicateHasBeenFoundElsewhere;
     }
 
     public File getFile() {

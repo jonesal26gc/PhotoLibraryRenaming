@@ -145,9 +145,11 @@ public class PhotoFolder {
         System.out.println("There were " + countOfDuplicatePhotoFiles + " duplicate(s) found.");
     }
 
-    public PhotoFolder(File folder, ArrayList<PhotoSubFolder> photoSubFolders) {
+    public PhotoFolder(File folder, ArrayList<PhotoSubFolder> photoSubFolders, int countOfMisplacedSubFolders, int countOfMisplacedFiles) {
         this.folder = folder;
         this.photoSubFolders = photoSubFolders;
+        this.countOfMisplacedSubFolders = countOfMisplacedSubFolders;
+        this.countOfMisplacedFiles = countOfMisplacedFiles;
     }
 
     public ArrayList<PhotoSubFolder> getPhotoSubFolders() {
@@ -156,14 +158,14 @@ public class PhotoFolder {
 
     public void generateRevisedPhotoSubFolders() {
         System.out.println(NEW_LINE + "Creating output.......");
-        deletePreExistingPhotoFolders();
+        deletePreExistingRevisedPhotoFolders();
         processFileCategoriesForRetention();
         System.out.println("Completed.");
     }
 
-    private void deletePreExistingPhotoFolders() {
-        for (Map.Entry<FileCategory, Integer> fileCategory : getPhotoFilesByFileCategoryTotals().entrySet()) {
-            String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName());
+    private void deletePreExistingRevisedPhotoFolders() {
+        for (FileCategory fileCategory : FileCategory.values()) {
+            String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName());
             deleteFolderStructure(revisedFolderName);
         }
     }
