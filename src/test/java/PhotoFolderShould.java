@@ -1,7 +1,9 @@
 import builders.PhotoFileBuilder;
 import builders.PhotoFolderBuilder;
 import builders.PhotoSubFolderBuilder;
-import classes.*;
+import classes.PhotoFile;
+import classes.PhotoFolder;
+import classes.PhotoSubFolder;
 import enums.FileType;
 import org.junit.Test;
 
@@ -14,6 +16,13 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class PhotoFolderShould {
+
+    @Test
+    public void
+    process() {
+        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_SUBFOLDER), TestConstants.DESTINATION_LOCATION);
+        photoFolder.generateRevisedPhotoSubFolders();
+    }
 
     @Test
     public void
@@ -50,14 +59,14 @@ public class PhotoFolderShould {
 
         // then
         photoFolder.displayFolderAndSubFolderSummary();
-        assertThat(totals.size(),is(2));
+        assertThat(totals.size(), is(2));
     }
 
     @Test
     public void
     contain_a_list_of_sub_folders() {
         // given
-        PhotoFolder photoFolder = new PhotoFolder(new File("D:\\Family Photo Library"));
+        PhotoFolder photoFolder = new PhotoFolder(new File("D:\\Family Photo Library"), "d:");
 
         // then
         for (PhotoSubFolder photoSubFolder : photoFolder.getPhotoSubFolders()) {

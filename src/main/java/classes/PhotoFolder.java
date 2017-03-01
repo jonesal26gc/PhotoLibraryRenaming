@@ -15,7 +15,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PhotoFolder {
     public static final String NEW_LINE = "\n";
-    public static final String REVISED_FOLDER_NAME_TEMPLATE = "D:\\Family XXXXX Library - Revised Folders";
+    public static final String REVISED_FOLDER_NAME_TEMPLATE = "\\Family XXXXX Library - Revised Folders";
     private static final String SLASH_DELIMITER = "\\";
     private static final String DASH = "-";
     private static final String SPACE = " ";
@@ -28,9 +28,11 @@ public class PhotoFolder {
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
     private int countOfMisplacedSubFolders = 0;
     private int countOfMisplacedFiles = 0;
+    private String destinationLocation;
 
-    public PhotoFolder(File folder) {
+    public PhotoFolder(File folder, String destinationLocation) {
         this.folder = folder;
+        this.destinationLocation = destinationLocation;
 
         checkThatItIsFolder(folder);
         buildListOfSubFolders(folder);
@@ -145,11 +147,12 @@ public class PhotoFolder {
         System.out.println("There were " + countOfDuplicatePhotoFiles + " duplicate(s) found.");
     }
 
-    public PhotoFolder(File folder, ArrayList<PhotoSubFolder> photoSubFolders, int countOfMisplacedSubFolders, int countOfMisplacedFiles) {
+    public PhotoFolder(File folder, ArrayList<PhotoSubFolder> photoSubFolders, int countOfMisplacedSubFolders, int countOfMisplacedFiles, String destinationLocation) {
         this.folder = folder;
         this.photoSubFolders = photoSubFolders;
         this.countOfMisplacedSubFolders = countOfMisplacedSubFolders;
         this.countOfMisplacedFiles = countOfMisplacedFiles;
+        this.destinationLocation = destinationLocation;
     }
 
     public ArrayList<PhotoSubFolder> getPhotoSubFolders() {
@@ -165,7 +168,7 @@ public class PhotoFolder {
 
     private void deletePreExistingRevisedPhotoFolders() {
         for (FileCategory fileCategory : FileCategory.values()) {
-            String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName());
+            String revisedFolderName = destinationLocation.concat(REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName()));
             deleteFolderStructure(revisedFolderName);
         }
     }
@@ -213,7 +216,7 @@ public class PhotoFolder {
             renamingOn = true;
         }
 
-        String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName());
+        String revisedFolderName = destinationLocation.concat(REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName()));
 
         String revisedSubFolderName;
         String revisedSubFolderNameWithoutCount;

@@ -11,6 +11,7 @@ public final class PhotoFolderBuilder {
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
     private int countOfMisplacedSubFolders = 0;
     private int countOfMisplacedFiles = 0;
+    private String destinationLocation;
 
     private PhotoFolderBuilder() {
     }
@@ -39,8 +40,13 @@ public final class PhotoFolderBuilder {
         return this;
     }
 
+    public PhotoFolderBuilder withDestinationLocation(String destinationLocation) {
+        this.destinationLocation = destinationLocation;
+        return this;
+    }
+
     public PhotoFolder build() {
-        PhotoFolder photoFolder = new PhotoFolder(folder, photoSubFolders, countOfMisplacedSubFolders, countOfMisplacedFiles);
+        PhotoFolder photoFolder = new PhotoFolder(folder, photoSubFolders, countOfMisplacedSubFolders, countOfMisplacedFiles, destinationLocation);
         return photoFolder;
     }
 }

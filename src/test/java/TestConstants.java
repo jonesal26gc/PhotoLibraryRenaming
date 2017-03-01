@@ -12,4 +12,6 @@ public class TestConstants {
 
     public static final String TEST_MISPLACED_SUBFOLDER = "d:\\PhotoLibraryRenaming\\src\\test\\data\\Misplaced Library\\subFolder";
 
+    public static final String DESTINATION_LOCATION = "d:\\PhotoLibraryRenaming\\src\\test\\data";
+
 }
