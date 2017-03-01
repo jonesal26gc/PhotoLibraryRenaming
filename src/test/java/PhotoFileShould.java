@@ -15,7 +15,7 @@ public class PhotoFileShould {
         System.out.println("Hex value of CheckSum=" + photoFile.getCheckSumInHex());
         assertThat(photoFile.getCheckSumInHex(),is("7DE5112FC8A6BDEE859ED5D5C50DF766"));
         assertThat(photoFile.getFileType(),is(FileType.TXT));
-        assertThat(photoFile.getFile().getName(),is("2001-01-01 Jan01 Description.txt"));
+        assertThat(photoFile.getFile().getName(),is("2001-01-01 Jan01 #0001 Description.txt"));
         assertThat(photoFile.isDuplicateHasBeenFoundElsewhere(),is(false));
     }
 }

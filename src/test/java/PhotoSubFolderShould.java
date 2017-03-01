@@ -16,9 +16,11 @@ public class PhotoSubFolderShould {
     identify_an_original_subfolder_format() {
         File file = new File(TestConstants.ORIGINAL_TEST_DOCUMENT_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
-        System.out.println(photoSubFolder.getSubFolder().getName());
         assertTrue(photoSubFolder.isOriginalSubFolderNameFormat());
         assertFalse(photoSubFolder.isNewSubFolderNameFormat());
+        assertThat(photoSubFolder.getPhotoFiles().size(),is(1));
+        System.out.println(photoSubFolder.getPhotoFiles().get(0).getFile().getPath());
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(),is(TestConstants.ORIGINAL_TEST_DOCUMENT_FILE));
     }
 
     @Test
@@ -26,11 +28,11 @@ public class PhotoSubFolderShould {
     identify_a_new_subfolder_format() {
         File file = new File(TestConstants.NEW_TEST_DOCUMENT_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
-        System.out.println(photoSubFolder.getSubFolder().getName());
         assertFalse(photoSubFolder.isOriginalSubFolderNameFormat());
         assertTrue(photoSubFolder.isNewSubFolderNameFormat());
         assertThat(photoSubFolder.getPhotoFiles().size(),is(1));
-        //assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getName(),is(file.getName()));
+        System.out.println(photoSubFolder.getPhotoFiles().get(0).getFile().getPath());
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(),is(TestConstants.NEW_TEST_DOCUMENT_FILE));
     }
 
 
