@@ -156,16 +156,26 @@ public class PhotoFolder {
 
     public void doUpdatesToFolder() {
         System.out.println(NEW_LINE + "Performing updates ........");
+
+        deleteAnyOutputFoldersThatMayAlreadyExist();
+        createOutputFolders();
+
+        System.out.println("Completed.");
+    }
+
+    private void deleteAnyOutputFoldersThatMayAlreadyExist() {
         for (Map.Entry<FileCategory, Integer> fileCategory : getPhotoFilesByFileCategoryTotals().entrySet()) {
             String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getKey().getLibraryName());
             deleteRevisedFolderStructure(revisedFolderName);
         }
-        subFolderUpdates();
-//        for (PhotoSubFolder photoSubFolder : photoSubFolders) {
-//            photoSubFolder.createRevisedFolderStructure(REVISED_FOLDER_NAME_TEMPLATE);
-//            photoSubFolder.copyFileToRevisedSubFolder(REVISED_FOLDER_NAME_TEMPLATE);
-//        }
-        System.out.println("Completed.");
+    }
+
+    public void createOutputFolders() {
+        for (FileCategory fileCategory : FileCategory.values()) {
+            if (fileCategory.isRetainFile()) {
+                processPhotoSubFolderForFileCategoryToBeRetained(fileCategory);
+            }
+        }
     }
 
     private void deleteRevisedFolderStructure(String revisedFolderName) {
@@ -186,51 +196,28 @@ public class PhotoFolder {
         }
     }
 
-    public void subFolderUpdates() {
-        for (FileCategory fileCategory : FileCategory.values()) {
-            if (fileCategory.isRetainFile()) {
-                for (PhotoSubFolder photoSubFolder : photoSubFolders) {
-                    if (photoSubFolder.getCountOfFilesInFileCategory().containsKey(fileCategory)
-                            && photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory) > 0) {
+    private void processPhotoSubFolderForFileCategoryToBeRetained(FileCategory fileCategory) {
+        for (PhotoSubFolder photoSubFolder : photoSubFolders) {
+            if (photoSubFolder.getCountOfFilesInFileCategory().containsKey(fileCategory)
+                    && photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory) > 0) {
 
-                        String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName());
-                        createRevisedFolder(revisedFolderName);
+                String revisedFolderName = REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName());
+                createRevisedFolder(revisedFolderName);
 
-                        String revisedSubFolderName;
-                        if (photoSubFolder.isOriginalSubFolderNameFormat()
-                                & fileCategory.isRenameFile()) {
-                            revisedSubFolderName = formatNewSubFolderName(photoSubFolder.getSubFolderName(),
-                                    photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory));
-                        } else {
-                            revisedSubFolderName = photoSubFolder.getSubFolder().getName();
-                        }
-                        createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
-                        String revisedSubFolderNameWithoutCount = revisedSubFolderName.replace(
-                                String.format(" {%d}", photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory)),
-                                EMPTY_STRING);
-
-                        for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
-                            if (photoFile.getFileType().getFileCategory() == fileCategory
-                                    & (!photoFile.isDuplicateHasBeenFoundElsewhere())) {
-                                //System.out.println("file: " + photoFile.getFile().getName());
-                                if (photoSubFolder.isOriginalSubFolderNameFormat()
-                                        & fileCategory.isRenameFile()) {
-                                    copyFileToRevisedSubFolder(photoFile.getFile(),
-                                            revisedFolderName,
-                                            revisedSubFolderName,
-                                            renamePhotoFile(revisedSubFolderNameWithoutCount,
-                                                    photoFile.getFile().getName(),
-                                                    photoFile.getSequenceNumber()));
-                                } else {
-                                    copyFileToRevisedSubFolder(photoFile.getFile(),
-                                            revisedFolderName,
-                                            revisedSubFolderName,
-                                            photoFile.getFile().getName());
-                                }
-                            }
-                        }
-                    }
+                String revisedSubFolderName;
+                if (photoSubFolder.isOriginalSubFolderNameFormat()
+                        & fileCategory.isRenameFile()) {
+                    revisedSubFolderName = formatNewSubFolderName(photoSubFolder.getSubFolderName(),
+                            photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory));
+                } else {
+                    revisedSubFolderName = photoSubFolder.getSubFolder().getName();
                 }
+                createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
+                String revisedSubFolderNameWithoutCount = revisedSubFolderName.replace(
+                        String.format(" {%d}", photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory)),
+                        EMPTY_STRING);
+
+                processPhotoFilesInPhotoSubFolderWithMatchingFileCategory(fileCategory, photoSubFolder, revisedFolderName, revisedSubFolderName, revisedSubFolderNameWithoutCount);
             }
         }
     }
@@ -272,25 +259,12 @@ public class PhotoFolder {
         }
     }
 
-    public void copyFileToRevisedSubFolder(File photoFile, String revisedFolderName, String revisedSubFolderName, String revisedFilename) {
-        try {
-            File file = new File(revisedFolderName
-                    .concat(SLASH_DELIMITER)
-                    .concat(revisedSubFolderName)
-                    .concat(SLASH_DELIMITER)
-                    .concat(revisedFilename));
-            Files.copy(photoFile.toPath(), file.toPath(), REPLACE_EXISTING);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    private void processPhotoFilesInPhotoSubFolderWithMatchingFileCategory(FileCategory fileCategory, PhotoSubFolder photoSubFolder, String revisedFolderName, String revisedSubFolderName, String revisedSubFolderNameWithoutCount) {
+        for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
+            if (photoFile.getFileType().getFileCategory() == fileCategory) {
+                copyPhotoFileToRevisedSubFolder(fileCategory, photoSubFolder, revisedFolderName, revisedSubFolderName, revisedSubFolderNameWithoutCount, photoFile);
+            }
         }
-    }
-
-    public String renamePhotoFile(String revisedSubFolderName, String filename, int newSequenceNumber) {
-        return getTimeStampFromNewSubFolderName(revisedSubFolderName)
-                .concat(formatFileSequenceNumber(newSequenceNumber))
-                .concat(getSubjectTextFromNewSubFolderName(revisedSubFolderName))
-                .concat(getCommentFieldFromFilename(filename))
-                .concat(getFileExtensionFromFilename(filename));
     }
 
     private String getCenturyAndYear(String subFolderName) {
@@ -311,6 +285,47 @@ public class PhotoFolder {
 
     private String getSubjectText(String subFolderName) {
         return subFolderName.substring(21);
+    }
+
+    private void copyPhotoFileToRevisedSubFolder(FileCategory fileCategory, PhotoSubFolder photoSubFolder, String revisedFolderName, String revisedSubFolderName, String revisedSubFolderNameWithoutCount, PhotoFile photoFile) {
+        if (photoFile.isDuplicateHasBeenFoundElsewhere()) {
+            return;
+        }
+        if (photoSubFolder.isOriginalSubFolderNameFormat()
+                & fileCategory.isRenameFile()) {
+            copyFileToRevisedSubFolder(photoFile.getFile(),
+                    revisedFolderName,
+                    revisedSubFolderName,
+                    renamePhotoFile(revisedSubFolderNameWithoutCount,
+                            photoFile.getFile().getName(),
+                            photoFile.getSequenceNumber()));
+        } else {
+            copyFileToRevisedSubFolder(photoFile.getFile(),
+                    revisedFolderName,
+                    revisedSubFolderName,
+                    photoFile.getFile().getName());
+        }
+    }
+
+    public void copyFileToRevisedSubFolder(File photoFile, String revisedFolderName, String revisedSubFolderName, String revisedFilename) {
+        try {
+            File file = new File(revisedFolderName
+                    .concat(SLASH_DELIMITER)
+                    .concat(revisedSubFolderName)
+                    .concat(SLASH_DELIMITER)
+                    .concat(revisedFilename));
+            Files.copy(photoFile.toPath(), file.toPath(), REPLACE_EXISTING);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public String renamePhotoFile(String revisedSubFolderName, String filename, int newSequenceNumber) {
+        return getTimeStampFromNewSubFolderName(revisedSubFolderName)
+                .concat(formatFileSequenceNumber(newSequenceNumber))
+                .concat(getSubjectTextFromNewSubFolderName(revisedSubFolderName))
+                .concat(getCommentFieldFromFilename(filename))
+                .concat(getFileExtensionFromFilename(filename));
     }
 
     private String getTimeStampFromNewSubFolderName(String revisedSubFolderName) {
