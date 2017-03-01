@@ -94,9 +94,9 @@ public class PhotoSubFolderShould {
     @Test
     public void
     check_for_misplaced_SubFolder() {
-        File file = new File(TestConstants.TEST_ORIGINAL_SUBFOLDER);
+        File file = new File(TestConstants.TEST_MISPLACED_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
-        assertThat(photoSubFolder.getPhotoFiles().size(),is(3));
+        assertThat(photoSubFolder.getPhotoFiles().size(),is(0));
         assertThat(photoSubFolder.getCountOfMisplacedSubFolders(),is(1));
     }
 
