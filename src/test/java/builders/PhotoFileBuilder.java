@@ -6,9 +6,10 @@ import enums.FileType;
 import java.io.File;
 
 public final class PhotoFileBuilder {
-    private String revisedFilename;
+    private boolean duplicateHasBeenFoundElsewhere = false;
     private File file;
     private FileType fileType;
+    private String checkSumInHex;
 
     private PhotoFileBuilder() {
     }
@@ -17,8 +18,8 @@ public final class PhotoFileBuilder {
         return new PhotoFileBuilder();
     }
 
-    public PhotoFileBuilder withRevisedFilename(String revisedFilename) {
-        this.revisedFilename = revisedFilename;
+    public PhotoFileBuilder withDuplicateHasBeenFoundElsewhere(boolean duplicateHasBeenFoundElsewhere) {
+        this.duplicateHasBeenFoundElsewhere = duplicateHasBeenFoundElsewhere;
         return this;
     }
 
@@ -32,8 +33,13 @@ public final class PhotoFileBuilder {
         return this;
     }
 
+    public PhotoFileBuilder withCheckSumInHex(String checkSumInHex) {
+        this.checkSumInHex = checkSumInHex;
+        return this;
+    }
+
     public PhotoFile build() {
-        PhotoFile photoFile = new PhotoFile(file, fileType, revisedFilename);
+        PhotoFile photoFile = new PhotoFile(file, fileType, checkSumInHex, duplicateHasBeenFoundElsewhere);
         return photoFile;
     }
 }

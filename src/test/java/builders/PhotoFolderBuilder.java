@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public final class PhotoFolderBuilder {
-    private File file;
+    private File folder;
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
 
     private PhotoFolderBuilder() {
@@ -17,8 +17,8 @@ public final class PhotoFolderBuilder {
         return new PhotoFolderBuilder();
     }
 
-    public PhotoFolderBuilder withFile(File file) {
-        this.file = file;
+    public PhotoFolderBuilder withFolder(File folder) {
+        this.folder = folder;
         return this;
     }
 
@@ -28,7 +28,7 @@ public final class PhotoFolderBuilder {
     }
 
     public PhotoFolder build() {
-        PhotoFolder photoFolder = new PhotoFolder(file, photoSubFolders);
+        PhotoFolder photoFolder = new PhotoFolder(folder, photoSubFolders);
         return photoFolder;
     }
 }

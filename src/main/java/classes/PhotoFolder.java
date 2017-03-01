@@ -216,7 +216,7 @@ public class PhotoFolder {
         String revisedSubFolderName;
         String revisedSubFolderNameWithoutCount;
         if (renamingOn) {
-            revisedSubFolderName = formatRevisedSubFolderName(photoSubFolder.getSubFolderName(),
+            revisedSubFolderName = formatRevisedSubFolderName(photoSubFolder.getSubFolder().getName(),
                     photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory));
             revisedSubFolderNameWithoutCount = revisedSubFolderName.replace(
                     String.format(" {%d}", photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory)),

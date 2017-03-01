@@ -7,17 +7,21 @@ import java.io.File;
 public class PhotoFile {
     private File file;
     private FileType fileType;
-    private String revisedFilename;
-    private int sequenceNumber = 0;
     private String checkSumInHex;
     private boolean duplicateHasBeenFoundElsewhere = false;
 
     public PhotoFile(File file) {
         this.file = file;
-        this.revisedFilename = file.getName();
         this.fileType = FileType.findFileTypeFromFilename(file.getName());
         this.checkSumInHex = setCheckSum(file);
         //System.out.println("File: " + file.getName() + " has checksum of: " + checkSumInHex);
+    }
+
+    public PhotoFile(File file, FileType fileType, String checkSumInHex, boolean duplicateHasBeenFoundElsewhere) {
+        this.file = file;
+        this.fileType = fileType;
+        this.checkSumInHex = checkSumInHex;
+        this.duplicateHasBeenFoundElsewhere = duplicateHasBeenFoundElsewhere;
     }
 
     private String setCheckSum(File file) {
@@ -27,12 +31,6 @@ public class PhotoFile {
             ex.printStackTrace();
             return null;
         }
-    }
-
-    public PhotoFile(File file, FileType fileType, String revisedFilename) {
-        this.file = file;
-        this.fileType = fileType;
-        this.revisedFilename = revisedFilename;
     }
 
     public File getFile() {
@@ -47,28 +45,12 @@ public class PhotoFile {
         return fileType;
     }
 
-    public String getRevisedFilename() {
-        return revisedFilename;
-    }
-
     public String getCheckSumInHex() {
         return checkSumInHex;
     }
 
-    public void setRevisedFilename(String revisedFilename) {
-        this.revisedFilename = revisedFilename;
-    }
-
     public boolean isDuplicateHasBeenFoundElsewhere() {
         return duplicateHasBeenFoundElsewhere;
-    }
-
-    public int getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     public void setDuplicateHasBeenFoundElsewhere(boolean duplicateHasBeenFoundElsewhere) {

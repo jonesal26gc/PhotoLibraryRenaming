@@ -64,9 +64,6 @@ public class PhotoFolderShould {
             System.out.println(photoSubFolder.getSubFolder().getPath());
             for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
                 System.out.println(photoFile.getFile().getName());
-                if (photoFile.getRevisedFilename() != null) {
-                    System.out.println(photoFile.getRevisedFilename());
-                }
             }
             for (Map.Entry<FileType, Integer> i : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
                 System.out.println(i.getKey().name() + "=" + i.getValue());
@@ -82,7 +79,6 @@ public class PhotoFolderShould {
         for (PhotoSubFolder photoSubFolder : photoFolder.getPhotoSubFolders()) {
             if (photoSubFolder.isNewSubFolderNameFormat()) n++;
             if (photoSubFolder.isOriginalSubFolderNameFormat()) o++;
-            System.out.println(photoSubFolder.getRevisedSubFolderName());
         }
         System.out.println("");
         System.out.println(o + " original subfolder names encountered.");

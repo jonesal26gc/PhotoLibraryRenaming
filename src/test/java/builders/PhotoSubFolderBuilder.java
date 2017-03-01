@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class PhotoSubFolderBuilder {
-    private File file;
+    private File subFolder;
     private boolean originalSubFolderNameFormat;
     private boolean newSubFolderNameFormat;
     private ArrayList<PhotoFile> photoFiles = new ArrayList<PhotoFile>();
     private Map<FileCategory, Integer> countOfFilesInFileCategory = new HashMap<FileCategory, Integer>();
-    private String revisedSubFolderName;
+    private int countOfMisplacedSubFolders = 0;
 
     private PhotoSubFolderBuilder() {
     }
@@ -24,8 +24,8 @@ public final class PhotoSubFolderBuilder {
         return new PhotoSubFolderBuilder();
     }
 
-    public PhotoSubFolderBuilder withFile(File file) {
-        this.file = file;
+    public PhotoSubFolderBuilder withSubFolder(File subFolder) {
+        this.subFolder = subFolder;
         return this;
     }
 
@@ -49,13 +49,13 @@ public final class PhotoSubFolderBuilder {
         return this;
     }
 
-    public PhotoSubFolderBuilder withRevisedSubFolderName(String revisedSubFolderName) {
-        this.revisedSubFolderName = revisedSubFolderName;
+    public PhotoSubFolderBuilder withCountOfMisplacedSubFolders(int countOfMisplacedSubFolders) {
+        this.countOfMisplacedSubFolders = countOfMisplacedSubFolders;
         return this;
     }
 
     public PhotoSubFolder build() {
-        PhotoSubFolder photoSubFolder = new PhotoSubFolder(file, originalSubFolderNameFormat, newSubFolderNameFormat, photoFiles, countOfFilesInFileCategory, revisedSubFolderName);
+        PhotoSubFolder photoSubFolder = new PhotoSubFolder(subFolder, originalSubFolderNameFormat, newSubFolderNameFormat, photoFiles, countOfFilesInFileCategory, countOfMisplacedSubFolders);
         return photoSubFolder;
     }
 }
