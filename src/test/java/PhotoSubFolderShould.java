@@ -1,8 +1,11 @@
 import classes.*;
+import enums.FileCategory;
 import enums.FileType;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -13,7 +16,7 @@ public class PhotoSubFolderShould {
 
     @Test
     public void
-    identify_an_original_subfolder_format() {
+    identify_3_files_of_an_original_format_subfolder() {
         File file = new File(TestConstants.TEST_ORIGINAL_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertTrue(photoSubFolder.isOriginalSubFolderNameFormat());
@@ -32,7 +35,7 @@ public class PhotoSubFolderShould {
 
     @Test
     public void
-    identify_a_new_subfolder_format() {
+    identify_3_files_of_a_new_format_subfolder() {
         File file = new File(TestConstants.TEST_NEW_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertFalse(photoSubFolder.isOriginalSubFolderNameFormat());
@@ -49,12 +52,52 @@ public class PhotoSubFolderShould {
         System.out.println(photoSubFolder.getPhotoFiles().get(2).getFile().getPath());
     }
 
-
     @Test(expected = RuntimeException.class)
     public void
     throw_exception_when_file_rather_than_folder() {
         File file = new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
+    }
+
+    @Test
+    public void
+    ignore_specific_files_when_requested() {
+        File file = new File(TestConstants.TEST_ORIGINAL_SUBFOLDER);
+        PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
+        assertThat(photoSubFolder.getPhotoFiles().size(),is(3));
+
+        HashMap<FileType,Integer> fileTypeCount = photoSubFolder.getPhotoFilesByFileTypeSubTotals();
+        assertThat(fileTypeCount.size(),is(2));
+        assertThat(fileTypeCount.get(FileType.TXT),is(2));
+        assertThat(fileTypeCount.get(FileType.JPG),is(1));
+
+        Map<FileCategory,Integer> fileCategoryCount = photoSubFolder.getCountOfFilesInFileCategory();
+        assertThat(fileCategoryCount.size(),is(2));
+        assertThat(fileCategoryCount.get(FileCategory.DOCUMENT),is(2));
+        assertThat(fileCategoryCount.get(FileCategory.PHOTO),is(1));
+
+        photoSubFolder.ignoreDuplicatedPhotoFile(photoSubFolder.getPhotoFiles().get(0));
+        photoSubFolder.ignoreDuplicatedPhotoFile(photoSubFolder.getPhotoFiles().get(1));
+
+        HashMap<FileType,Integer> fileTypeCountAfterwards = photoSubFolder.getPhotoFilesByFileTypeSubTotals();
+        assertThat(fileTypeCountAfterwards.size(),is(2));
+        assertThat(fileTypeCountAfterwards.get(FileType.TXT),is(2));
+        assertThat(fileTypeCountAfterwards.get(FileType.JPG),is(1));
+
+        Map<FileCategory,Integer> fileCategoryCountAfterwards = photoSubFolder.getCountOfFilesInFileCategory();
+        assertThat(fileCategoryCountAfterwards.size(),is(2));
+        assertThat(fileCategoryCountAfterwards.get(FileCategory.DOCUMENT),is(0));
+        assertThat(fileCategoryCountAfterwards.get(FileCategory.PHOTO),is(1));
+    }
+
+
+    @Test
+    public void
+    check_for_misplaced_SubFolder() {
+        File file = new File(TestConstants.TEST_ORIGINAL_SUBFOLDER);
+        PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
+        assertThat(photoSubFolder.getPhotoFiles().size(),is(3));
+        assertThat(photoSubFolder.getCountOfMisplacedSubFolders(),is(1));
     }
 
 //    @Test
