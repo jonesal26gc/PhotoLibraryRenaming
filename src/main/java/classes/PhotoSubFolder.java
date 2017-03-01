@@ -74,6 +74,9 @@ public class PhotoSubFolder {
             } else {
                 summaryOfFileTypes.put(photoFile.getFileType(), 1);
             }
+            if (photoFile.isDuplicateHasBeenFoundElsewhere()) {
+                summaryOfFileTypes.put(photoFile.getFileType(), summaryOfFileTypes.get(photoFile.getFileType()) - 1);
+            }
         }
         return summaryOfFileTypes;
     }

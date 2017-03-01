@@ -21,6 +21,7 @@ public class PhotoFolderShould {
     public void
     process() {
         PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION);
+        photoFolder.displayFolderAndSubFolderSummary();
         photoFolder.generateRevisedPhotoSubFolders();
     }
 
