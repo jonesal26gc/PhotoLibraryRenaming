@@ -20,7 +20,7 @@ public class PhotoFolderShould {
     @Test
     public void
     process() {
-        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_SUBFOLDER), TestConstants.DESTINATION_LOCATION);
+        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION);
         photoFolder.generateRevisedPhotoSubFolders();
     }
 

@@ -210,17 +210,12 @@ public class PhotoFolder {
     }
 
     private void processPhotoSubFolderWithEvidenceOfThisFileCategory(FileCategory fileCategory, PhotoSubFolder photoSubFolder) {
-        boolean renamingOn = false;
-        if (photoSubFolder.isOriginalSubFolderNameFormat()
-                & fileCategory.isRenameFile()) {
-            renamingOn = true;
-        }
 
         String revisedFolderName = destinationLocation.concat(REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName()));
 
         String revisedSubFolderName;
         String revisedSubFolderNameWithoutCount;
-        if (renamingOn) {
+        if (photoSubFolder.isOriginalSubFolderNameFormat()) {
             revisedSubFolderName = formatRevisedSubFolderName(photoSubFolder.getSubFolder().getName(),
                     photoSubFolder.getCountOfFilesInFileCategory().get(fileCategory));
             revisedSubFolderNameWithoutCount = revisedSubFolderName.replace(
@@ -232,12 +227,18 @@ public class PhotoFolder {
 
         createRevisedFolder(revisedFolderName);
         createRevisedSubFolder(revisedFolderName, revisedSubFolderName);
+
+        boolean fileRenamingOn = false;
+        if (photoSubFolder.isOriginalSubFolderNameFormat()
+                & fileCategory.isRenameFile()) {
+            fileRenamingOn = true;
+        }
         processPhotoFilesInPhotoSubFolder(fileCategory,
                 photoSubFolder,
                 revisedFolderName,
                 revisedSubFolderName,
                 revisedSubFolderNameWithoutCount,
-                renamingOn);
+                fileRenamingOn);
     }
 
     private String formatRevisedSubFolderName(String subFolderName, int fileCount) {
