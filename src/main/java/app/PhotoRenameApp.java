@@ -19,7 +19,7 @@ public class PhotoRenameApp {
 
     private static void run(PhotoFolder photoFolder, boolean isUpdate) {
         if (isUpdate) {
-            photoFolder.doUpdatesToFolder();
+            photoFolder.generateRevisedPhotoSubFolders();
         }
     }
 }
