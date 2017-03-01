@@ -1,5 +1,5 @@
-import builders.PhotoSubFolderBuilder;
 import classes.*;
+import enums.FileType;
 import org.junit.Test;
 
 import java.io.File;
@@ -14,45 +14,60 @@ public class PhotoSubFolderShould {
     @Test
     public void
     identify_an_original_subfolder_format() {
-        File file = new File(TestConstants.ORIGINAL_TEST_DOCUMENT_SUBFOLDER);
+        File file = new File(TestConstants.TEST_ORIGINAL_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertTrue(photoSubFolder.isOriginalSubFolderNameFormat());
         assertFalse(photoSubFolder.isNewSubFolderNameFormat());
-        assertThat(photoSubFolder.getPhotoFiles().size(),is(1));
+        assertThat(photoSubFolder.getPhotoFiles().size(),is(3));
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(),is(TestConstants.TEST_ORIGINAL_DOCUMENT_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFileType(),is(FileType.TXT));
         System.out.println(photoSubFolder.getPhotoFiles().get(0).getFile().getPath());
-        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(),is(TestConstants.ORIGINAL_TEST_DOCUMENT_FILE));
+        assertThat(photoSubFolder.getPhotoFiles().get(1).getFile().getPath(),is(TestConstants.TEST_ORIGINAL_DOCUMENT_2));
+        assertThat(photoSubFolder.getPhotoFiles().get(1).getFileType(),is(FileType.TXT));
+        System.out.println(photoSubFolder.getPhotoFiles().get(1).getFile().getPath());
+        assertThat(photoSubFolder.getPhotoFiles().get(2).getFile().getPath(),is(TestConstants.TEST_ORIGINAL_PICTURE_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(2).getFileType(),is(FileType.JPG));
+        System.out.println(photoSubFolder.getPhotoFiles().get(2).getFile().getPath());
     }
 
     @Test
     public void
     identify_a_new_subfolder_format() {
-        File file = new File(TestConstants.NEW_TEST_DOCUMENT_SUBFOLDER);
+        File file = new File(TestConstants.TEST_NEW_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertFalse(photoSubFolder.isOriginalSubFolderNameFormat());
         assertTrue(photoSubFolder.isNewSubFolderNameFormat());
-        assertThat(photoSubFolder.getPhotoFiles().size(),is(1));
+        assertThat(photoSubFolder.getPhotoFiles().size(),is(3));
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(),is(TestConstants.TEST_NEW_DOCUMENT_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFileType(),is(FileType.TXT));
         System.out.println(photoSubFolder.getPhotoFiles().get(0).getFile().getPath());
-        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(),is(TestConstants.NEW_TEST_DOCUMENT_FILE));
+        assertThat(photoSubFolder.getPhotoFiles().get(1).getFile().getPath(),is(TestConstants.TEST_NEW_DOCUMENT_2));
+        assertThat(photoSubFolder.getPhotoFiles().get(1).getFileType(),is(FileType.TXT));
+        System.out.println(photoSubFolder.getPhotoFiles().get(1).getFile().getPath());
+        assertThat(photoSubFolder.getPhotoFiles().get(2).getFile().getPath(),is(TestConstants.TEST_NEW_PICTURE_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(2).getFileType(),is(FileType.JPG));
+        System.out.println(photoSubFolder.getPhotoFiles().get(2).getFile().getPath());
     }
 
 
     @Test(expected = RuntimeException.class)
     public void
-    throw_error_when_not_a_folder() {
-        PhotoSubFolder photoSubFolder = new PhotoSubFolder(new File("D:\\Family Photo Library\\2001-12-09 Dec01 Bournmouth"));
+    throw_exception_when_file_rather_than_folder() {
+        File file = new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1);
+        PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
     }
 
-    @Test
-    public void
-    contain_a_list_of_photoFiles() {
-        // given
-        PhotoSubFolder photoSubFolder = new PhotoSubFolder(new File("D:\\Family Photo Library\\2001-12-09 Dec01 Bournmouth (Sue & Paul's)"));
-
-        // then
-        for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
-            System.out.println(photoFile.getFile().getName());
-        }
-    }
+//    @Test
+//    public void
+//    contain_a_list_of_photoFiles() {
+//        // given
+//        PhotoSubFolder photoSubFolder = new PhotoSubFolder(new File("D:\\Family Photo Library\\2001-12-09 Dec01 Bournmouth (Sue & Paul's)"));
+//
+//        // then
+//        for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
+//            System.out.println(photoFile.getFile().getName());
+//        }
+//    }
 
 //    @Test
 //    public void

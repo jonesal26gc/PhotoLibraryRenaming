@@ -10,12 +10,12 @@ public class PhotoFileShould {
     @Test
     public void
     perform_checksum(){
-        File document = new File(TestConstants.ORIGINAL_TEST_DOCUMENT_FILE);
+        File document = new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1);
         PhotoFile photoFile = new PhotoFile(document);
         System.out.println("Hex value of CheckSum=" + photoFile.getCheckSumInHex());
-        assertThat(photoFile.getCheckSumInHex(),is("7DE5112FC8A6BDEE859ED5D5C50DF766"));
+        assertThat(photoFile.getCheckSumInHex(),is("CE2B4BE385447FBC0F12DD7731F4C9E1"));
         assertThat(photoFile.getFileType(),is(FileType.TXT));
-        assertThat(photoFile.getFile().getName(),is("2001-01-01 Jan01 #0001 Description.txt"));
+        assertThat(photoFile.getFile().getName(),is("Document_1.txt"));
         assertThat(photoFile.isDuplicateHasBeenFoundElsewhere(),is(false));
     }
 }
