@@ -1,5 +1,6 @@
 public class TestConstants {
-    public static final String TEST_ORIGINAL_SUBFOLDER = "d:\\PhotoLibraryRenaming\\src\\test\\data\\Original Library\\2001-01-01 Jan '01 - Description";
+    public static final String TEST_ORIGINAL_LIBRARY = "d:\\PhotoLibraryRenaming\\src\\test\\data\\Original Library";
+    public static final String TEST_ORIGINAL_SUBFOLDER = TEST_ORIGINAL_LIBRARY + "\\2001-01-01 Jan '01 - Description";
     public static final String TEST_ORIGINAL_DOCUMENT_1 = TEST_ORIGINAL_SUBFOLDER + "\\Document_1.txt";
     public static final String TEST_ORIGINAL_DOCUMENT_2 = TEST_ORIGINAL_SUBFOLDER + "\\Document_2.txt";
     public static final String TEST_ORIGINAL_PICTURE_1 = TEST_ORIGINAL_SUBFOLDER + "\\Picture_1 [Amy on trampoline].jpg";
