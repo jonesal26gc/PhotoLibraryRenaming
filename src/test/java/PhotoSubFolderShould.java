@@ -1,23 +1,38 @@
+import builders.PhotoSubFolderBuilder;
 import classes.*;
-import enums.FileCategory;
-import enums.FileType;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class PhotoSubFolderShould {
 
     @Test
     public void
-    be_a_folder() {
-        PhotoSubFolder photoSubFolder = new PhotoSubFolder(new File("D:\\Family Photo Library\\2001-12-09 Dec01 Bournmouth (Sue & Paul's)"));
+    identify_an_original_subfolder_format() {
+        File file = new File(TestConstants.ORIGINAL_TEST_DOCUMENT_SUBFOLDER);
+        PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
+        System.out.println(photoSubFolder.getSubFolder().getName());
+        assertTrue(photoSubFolder.isOriginalSubFolderNameFormat());
+        assertFalse(photoSubFolder.isNewSubFolderNameFormat());
     }
+
+    @Test
+    public void
+    identify_a_new_subfolder_format() {
+        File file = new File(TestConstants.NEW_TEST_DOCUMENT_SUBFOLDER);
+        PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
+        System.out.println(photoSubFolder.getSubFolder().getName());
+        assertFalse(photoSubFolder.isOriginalSubFolderNameFormat());
+        assertTrue(photoSubFolder.isNewSubFolderNameFormat());
+        assertThat(photoSubFolder.getPhotoFiles().size(),is(1));
+        //assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getName(),is(file.getName()));
+    }
+
 
     @Test(expected = RuntimeException.class)
     public void
