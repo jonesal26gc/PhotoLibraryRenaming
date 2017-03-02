@@ -46,7 +46,7 @@ public class PhotoFolder {
         }
     }
 
-    public void buildListOfSubFolders(File folder) {
+    private void buildListOfSubFolders(File folder) {
         File[] subFolders = folder.listFiles();
         for (File subFolder : subFolders) {
             if (subFolder.isDirectory()) {
@@ -191,7 +191,7 @@ public class PhotoFolder {
         }
     }
 
-    public void processFileCategoriesForRetention() {
+    private void processFileCategoriesForRetention() {
         for (FileCategory fileCategory : FileCategory.values()) {
             if (fileCategory.isRetainFile()) {
                 processPhotoSubFolderForFileCategory(fileCategory);
@@ -326,7 +326,7 @@ public class PhotoFolder {
                 fileSequenceNumber);
     }
 
-    public String renamePhotoFile(String revisedSubFolderName, String filename, int newSequenceNumber) {
+    private String renamePhotoFile(String revisedSubFolderName, String filename, int newSequenceNumber) {
         return getTimeStampFromNewSubFolderName(revisedSubFolderName)
                 .concat(formatFileSequenceNumber(newSequenceNumber))
                 .concat(getSubjectTextFromNewSubFolderName(revisedSubFolderName))
@@ -361,7 +361,7 @@ public class PhotoFolder {
         return filename.substring(filename.indexOf(FULL_STOP));
     }
 
-    public void copyFileToRevisedSubFolder(File photoFile, File newFile) {
+    private void copyFileToRevisedSubFolder(File photoFile, File newFile) {
         try {
             Files.copy(photoFile.toPath(), newFile.toPath(), REPLACE_EXISTING);
         } catch (Exception ex) {

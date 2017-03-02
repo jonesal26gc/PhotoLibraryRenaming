@@ -3,6 +3,7 @@ package classes;
 import enums.FileType;
 
 import java.io.File;
+import java.util.Comparator;
 
 public class PhotoFile {
     private File file;
@@ -56,4 +57,15 @@ public class PhotoFile {
     public void setDuplicateHasBeenFoundElsewhere(boolean duplicateHasBeenFoundElsewhere) {
         this.duplicateHasBeenFoundElsewhere = duplicateHasBeenFoundElsewhere;
     }
+
+    // Use this to SORT using "Collections.sort(arrayListName, PhotoFile.photoFileComparatorByFilename)".
+    public static Comparator<PhotoFile> photoFileComparatorByFilename = new Comparator<PhotoFile>() {
+        public int compare(PhotoFile p1, PhotoFile p2) {
+            String photoFile1 = p1.getFile().getName();
+            String photoFile2 = p2.getFile().getName();
+
+            // Ascending sequence.
+            return photoFile1.compareTo(photoFile2);
+        }
+    };
 }
