@@ -5,6 +5,7 @@ import enums.FileType;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,10 @@ public class PhotoSubFolder {
                 System.out.println("* Warning - Non standard file '" + photo.getPath() + "' encountered.");
                 countOfMisplacedSubFolders++;
             }
+        }
+        // Sort using the comparator for filename when more that one entry.
+        if (photoFiles.size() > 1) {
+            Collections.sort(photoFiles, PhotoFile.photoFileComparatorByFilename);
         }
     }
 
