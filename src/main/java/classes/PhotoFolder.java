@@ -138,7 +138,7 @@ public class PhotoFolder {
                 if (checkSumToFileMappings.containsKey(photoFile.getCheckSumInHex())) {
                     countOfDuplicatePhotoFiles++;
                     photoSubFolder.ignoreDuplicatedPhotoFile(photoFile);
-                    System.out.println("* Warning * Duplicated file: '" + photoFile.getNameOfFile() + "' - dropping it.");
+                    System.out.println("* Warning * Duplicated file: '" + photoFile.getFile().getPath() + "' - will be excluded.");
                 } else {
                     checkSumToFileMappings.put(photoFile.getCheckSumInHex(), photoFile.getFile());
                 }
