@@ -6,6 +6,7 @@ import classes.PhotoFolder;
 import classes.PhotoSubFolder;
 import enums.FileCategory;
 import enums.FileType;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,33 +18,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class PhotoFolderShould {
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void
     generate_the_corresponding_output_files() {
         PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION);
         photoFolder.generateRevisedPhotoSubFolders();
         File library = new File(TestConstants.DESTINATION_LOCATION);
         File document_1 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("\\Family Document Library - Revised Folders")
-                .concat("\\2001-01-01 Jan01 {2} Description")
-                .concat("\\Document_1.txt"));
+                .concat("/Family Document Library - Revised Folders")
+                .concat("/2001-01-01 Jan01 {2} Description")
+                .concat("/Document_1.txt"));
         File document_2 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("\\Family Document Library - Revised Folders")
-                .concat("\\2001-01-01 Jan01 {2} Description")
-                .concat("\\Document_2.txt"));
+                .concat("/Family Document Library - Revised Folders")
+                .concat("/2001-01-01 Jan01 {2} Description")
+                .concat("/Document_2.txt"));
         File photo_1 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("\\Family Photo Library - Revised Folders")
-                .concat("\\2001-01-01 Jan01 {1} Description")
-                .concat("\\2001-01-01 Jan01 #001 Description [Amy on trampoline].jpg"));
+                .concat("/Family Photo Library - Revised Folders")
+                .concat("/2001-01-01 Jan01 {1} Description")
+                .concat("/2001-01-01 Jan01 #001 Description [Amy on trampoline].jpg"));
         File video_1 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("\\Family Video Library - Revised Folders")
-                .concat("\\2001-01-01 Jan01 {1} Description")
-                .concat("\\2001-01-01 Jan01 #001 Description.MOV"));
+                .concat("/Family Video Library - Revised Folders")
+                .concat("/2001-01-01 Jan01 {1} Description")
+                .concat("/2001-01-01 Jan01 #001 Description.MOV"));
         int countOfDirectories = 0;
         for (String directoryName : library.list()) {
             if (directoryName.matches("Family .* Library - Revised Folders")) countOfDirectories++;
@@ -53,6 +55,8 @@ public class PhotoFolderShould {
         assertTrue(document_2.exists());
         assertTrue(photo_1.exists());
         assertTrue(video_1.exists());
+        // compare the original and new files for identical contents??
+        //assertEquals(FileUtils.readLines(new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1).getPath(), FileUtils.readLines(output));
     }
 
     @Test

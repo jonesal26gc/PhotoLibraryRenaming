@@ -11,9 +11,10 @@ public class PhotoFileShould {
     public void
     perform_checksum(){
         File document = new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1);
+        System.out.println(document.getPath());
         PhotoFile photoFile = new PhotoFile(document);
         System.out.println("Hex value of CheckSum=" + photoFile.getCheckSumInHex());
-        assertThat(photoFile.getCheckSumInHex(),is("CE2B4BE385447FBC0F12DD7731F4C9E1"));
+        assertThat(photoFile.getCheckSumInHex(),is("EF97A75172D9C01072E1AF0B2859D5EA"));
         assertThat(photoFile.getFileType(),is(FileType.TXT));
         assertThat(photoFile.getFile().getName(),is("Document_1.txt"));
         assertThat(photoFile.isDuplicateHasBeenFoundElsewhere(),is(false));

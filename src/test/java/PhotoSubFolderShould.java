@@ -76,33 +76,36 @@ public class PhotoSubFolderShould {
         assertThat(fileTypeCount.size(), is(3));
         assertThat(fileTypeCount.get(FileType.TXT), is(2));
         assertThat(fileTypeCount.get(FileType.JPG), is(1));
+        assertThat(fileTypeCount.get(FileType.MOV), is(2));
 
         Map<FileCategory, Integer> fileCategoryCount = photoSubFolder.getCountOfFilesInFileCategory();
         assertThat(fileCategoryCount.size(), is(3));
         assertThat(fileCategoryCount.get(FileCategory.DOCUMENT), is(2));
         assertThat(fileCategoryCount.get(FileCategory.PHOTO), is(1));
+        assertThat(fileCategoryCount.get(FileCategory.VIDEO), is(2));
 
         photoSubFolder.ignoreDuplicatedPhotoFile(photoSubFolder.getPhotoFiles().get(0));
         photoSubFolder.ignoreDuplicatedPhotoFile(photoSubFolder.getPhotoFiles().get(1));
 
         HashMap<FileType, Integer> fileTypeCountAfterwards = photoSubFolder.getPhotoFilesByFileTypeSubTotals();
         assertThat(fileTypeCountAfterwards.size(), is(3));
-        assertThat(fileTypeCountAfterwards.get(FileType.TXT), is(2));
+        assertThat(fileTypeCountAfterwards.get(FileType.TXT), is(0));
         assertThat(fileTypeCountAfterwards.get(FileType.JPG), is(1));
+        assertThat(fileTypeCountAfterwards.get(FileType.MOV), is(2));
 
         Map<FileCategory, Integer> fileCategoryCountAfterwards = photoSubFolder.getCountOfFilesInFileCategory();
         assertThat(fileCategoryCountAfterwards.size(), is(3));
         assertThat(fileCategoryCountAfterwards.get(FileCategory.DOCUMENT), is(0));
         assertThat(fileCategoryCountAfterwards.get(FileCategory.PHOTO), is(1));
+        assertThat(fileCategoryCount.get(FileCategory.VIDEO), is(2));
     }
-
 
     @Test
     public void
     check_for_misplaced_SubFolder() {
         File file = new File(TestConstants.TEST_MISPLACED_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
-        assertThat(photoSubFolder.getPhotoFiles().size(), is(0));
+        assertThat(photoSubFolder.getPhotoFiles().size(), is(1));
         assertThat(photoSubFolder.getCountOfMisplacedSubFolders(), is(1));
     }
 }
