@@ -34,8 +34,17 @@ public class PhotoFolder {
         this.folder = folder;
         this.destinationLocation = destinationLocation;
 
+        System.out.println("Photo folder renaming utility");
+        System.out.println("=============================");
+        System.out.println(NEW_LINE + "Folder Name: " + folder.getName());
+        System.out.println(           "-----------");
+
         checkThatItIsFolder(folder);
         buildListOfSubFolders(folder);
+        if (photoSubFolders.isEmpty()) {
+            System.out.println("No files found!");
+            return;
+        }
         displayFolderAndSubFolderSummary();
         checkForDuplicatedPhotoFilesAcrossAllSubFolders();
     }
@@ -59,11 +68,6 @@ public class PhotoFolder {
     }
 
     public void displayFolderAndSubFolderSummary() {
-
-        System.out.println("Photo folder renaming utility");
-        System.out.println("===========================");
-
-        System.out.println(NEW_LINE + "Folder Name: " + folder.getName());
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
             System.out.println(NEW_LINE + "    Sub-Folder Name: " + photoSubFolder.getSubFolder().getName());
             for (Map.Entry<FileType, Integer> fileType : photoSubFolder.getPhotoFilesByFileTypeSubTotals().entrySet()) {
@@ -74,7 +78,9 @@ public class PhotoFolder {
             }
             countOfMisplacedSubFolders += photoSubFolder.getCountOfMisplacedSubFolders();
         }
+
         System.out.println(NEW_LINE + "Grand Totals");
+        System.out.println("------------");
         for (Map.Entry<FileType, Integer> fileType : getPhotoFilesByFileTypeTotals().entrySet()) {
             System.out.println(String.format("% 5d file(s) of Type '", fileType.getValue()) + fileType.getKey().name() + "' found.");
         }

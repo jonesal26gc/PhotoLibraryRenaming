@@ -7,9 +7,9 @@ import java.io.File;
 public class PhotoRenameApp {
     public static void main(String[] args) {
         if (args.length == 0) {
-            run(new PhotoFolder(new File("D:\\Family Photo Library"), "d:"), true);
+            run(new PhotoFolder(new File("/Users/tonyjones/Family Photo Library"), "/Users/tonyjones"), true);
         } else {
-            run(new PhotoFolder(new File(args[0]), "d:"), translateUpdateParameter(args[1]));
+            run(new PhotoFolder(new File(args[0]), "/Users/tonyjones"), translateUpdateParameter(args[1]));
         }
     }
 
@@ -18,7 +18,7 @@ public class PhotoRenameApp {
     }
 
     private static void run(PhotoFolder photoFolder, boolean isUpdate) {
-        if (isUpdate) {
+        if (isUpdate & !photoFolder.getPhotoSubFolders().isEmpty()) {
             photoFolder.generateRevisedPhotoSubFolders();
         }
     }
