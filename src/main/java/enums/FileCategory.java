@@ -3,7 +3,7 @@ package enums;
 public enum FileCategory {
      PHOTO(true,true,"Photo")
     ,VIDEO(true,true,"Video")
-    ,VIDEO_SONY(true,false,"Video (SONY)")
+    ,VIDEO_SONY(false,false,"")
     ,MUSIC(true,false,"Music")
     ,DOCUMENT(true,false,"Document")
     ,THUMBNAIL(false,false,"")

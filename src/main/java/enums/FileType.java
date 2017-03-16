@@ -9,7 +9,7 @@ public enum FileType {
     TXT(FileCategory.DOCUMENT),
     DOC(FileCategory.DOCUMENT),
     DOCX(FileCategory.DOCUMENT),
-    MPG(FileCategory.VIDEO_SONY),
+    MPG(FileCategory.VIDEO),
     MOFF(FileCategory.VIDEO_SONY),
     MODD(FileCategory.VIDEO_SONY),
     DB(FileCategory.RUBBISH),

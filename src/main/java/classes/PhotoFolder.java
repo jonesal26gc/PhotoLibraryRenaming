@@ -61,7 +61,7 @@ public class PhotoFolder {
             if (subFolder.isDirectory()) {
                 photoSubFolders.add(new PhotoSubFolder(subFolder));
             } else {
-                System.out.println("* Warning - Non Sub-folder '" + folder.getPath() + "' encountered.");
+                System.out.println("* Warning - Non Sub-folder '" + subFolder.getName() + "' encountered.");
                 countOfMisplacedFiles++;
             }
         }
