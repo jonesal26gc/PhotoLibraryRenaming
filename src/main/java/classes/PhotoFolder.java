@@ -28,6 +28,7 @@ public class PhotoFolder {
     private ArrayList<PhotoSubFolder> photoSubFolders = new ArrayList<PhotoSubFolder>();
     private int countOfMisplacedSubFolders = 0;
     private int countOfMisplacedFiles = 0;
+    private int countOfDuplicatePhotoFiles = 0;
     private String destinationLocation;
 
     public PhotoFolder(File folder, String destinationLocation) {
@@ -37,7 +38,7 @@ public class PhotoFolder {
         System.out.println("Photo folder renaming utility");
         System.out.println("=============================");
         System.out.println(NEW_LINE + "Folder Name: " + folder.getName());
-        System.out.println(           "-----------");
+        System.out.println("-----------");
 
         checkThatItIsFolder(folder);
         buildListOfSubFolders(folder);
@@ -47,6 +48,11 @@ public class PhotoFolder {
         }
         displayFolderAndSubFolderSummary();
         checkForDuplicatedPhotoFilesAcrossAllSubFolders();
+        if (countOfMisplacedFiles > 0 | countOfMisplacedSubFolders > 0) {
+            sleepForAMoment();
+            throw new RuntimeException("* Error * Run aborted due to previous exceptions.");
+        }
+
     }
 
     public void checkThatItIsFolder(File folder) {
@@ -94,8 +100,6 @@ public class PhotoFolder {
             if (countOfMisplacedFiles > 0) {
                 System.out.println(NEW_LINE + "* Warning * There were " + countOfMisplacedFiles + " misplaced files encountered.");
             }
-            sleepForAMoment();
-            throw new RuntimeException("* Error * Run aborted due to previous exceptions.");
         }
     }
 
@@ -136,7 +140,6 @@ public class PhotoFolder {
     }
 
     private void checkForDuplicatedPhotoFilesAcrossAllSubFolders() {
-        int countOfDuplicatePhotoFiles = 0;
         TreeMap<String, File> checkSumToFileMappings = new TreeMap<String, File>();
         System.out.print(NEW_LINE);
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
