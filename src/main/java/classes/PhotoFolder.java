@@ -14,9 +14,9 @@ import java.util.TreeMap;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PhotoFolder {
-    public static final String NEW_LINE = "\n";
-    public static final String REVISED_FOLDER_NAME_TEMPLATE = "\\Family XXXXX Library - Revised Folders";
-    private static final String SLASH_DELIMITER = "\\";
+    private static final String NEW_LINE = "\n";
+    private static final String REVISED_FOLDER_NAME_TEMPLATE = "Family XXXXX Library - Revised Folders";
+    private static final String SLASH_DELIMITER = Character.toString(File.separatorChar);
     private static final String DASH = "-";
     private static final String SPACE = " ";
     private static final String FILE_COUNT_TEMPLATE = "{fileCount}";
@@ -31,7 +31,7 @@ public class PhotoFolder {
     private int countOfDuplicatePhotoFiles = 0;
     private String destinationLocation;
 
-    public PhotoFolder(File folder, String destinationLocation) {
+    public PhotoFolder(File folder, String destinationLocation, boolean ignoreErrors) {
         this.folder = folder;
         this.destinationLocation = destinationLocation;
 
@@ -48,9 +48,11 @@ public class PhotoFolder {
         }
         displayFolderAndSubFolderSummary();
         checkForDuplicatedPhotoFilesAcrossAllSubFolders();
-        if (countOfMisplacedFiles > 0 | countOfMisplacedSubFolders > 0) {
+        if (countOfMisplacedFiles > 0 || countOfMisplacedSubFolders > 0) {
             sleepForAMoment();
-            throw new RuntimeException("* Error * Run aborted due to previous exceptions.");
+            if (!ignoreErrors) {
+                throw new RuntimeException("* Error * Run aborted due to previous exception(s).");
+            }
         }
 
     }
@@ -103,6 +105,31 @@ public class PhotoFolder {
         }
     }
 
+    private void checkForDuplicatedPhotoFilesAcrossAllSubFolders() {
+        TreeMap<String, File> checkSumToFileMappings = new TreeMap<String, File>();
+        System.out.print(NEW_LINE);
+        for (PhotoSubFolder photoSubFolder : photoSubFolders) {
+            for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
+                if (checkSumToFileMappings.containsKey(photoFile.getCheckSumInHex())) {
+                    countOfDuplicatePhotoFiles++;
+                    photoSubFolder.ignoreDuplicatedPhotoFile(photoFile);
+                    System.out.println("* Warning * Duplicated file: '" + photoFile.getFile().getPath() + "' - will be excluded.");
+                } else {
+                    checkSumToFileMappings.put(photoFile.getCheckSumInHex(), photoFile.getFile());
+                }
+            }
+        }
+        System.out.println("There were " + countOfDuplicatePhotoFiles + " duplicate(s) found.");
+    }
+
+    private void sleepForAMoment() {
+        try {
+            Thread.sleep(1000);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public HashMap<FileType, Integer> getPhotoFilesByFileTypeTotals() {
         HashMap<FileType, Integer> summaryOfFileTypes = new HashMap<FileType, Integer>();
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
@@ -131,31 +158,6 @@ public class PhotoFolder {
         return summaryOfFileCategories;
     }
 
-    private void sleepForAMoment() {
-        try {
-            Thread.sleep(1000);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void checkForDuplicatedPhotoFilesAcrossAllSubFolders() {
-        TreeMap<String, File> checkSumToFileMappings = new TreeMap<String, File>();
-        System.out.print(NEW_LINE);
-        for (PhotoSubFolder photoSubFolder : photoSubFolders) {
-            for (PhotoFile photoFile : photoSubFolder.getPhotoFiles()) {
-                if (checkSumToFileMappings.containsKey(photoFile.getCheckSumInHex())) {
-                    countOfDuplicatePhotoFiles++;
-                    photoSubFolder.ignoreDuplicatedPhotoFile(photoFile);
-                    System.out.println("* Warning * Duplicated file: '" + photoFile.getFile().getPath() + "' - will be excluded.");
-                } else {
-                    checkSumToFileMappings.put(photoFile.getCheckSumInHex(), photoFile.getFile());
-                }
-            }
-        }
-        System.out.println("There were " + countOfDuplicatePhotoFiles + " duplicate(s) found.");
-    }
-
     public PhotoFolder(File folder, ArrayList<PhotoSubFolder> photoSubFolders, int countOfMisplacedSubFolders, int countOfMisplacedFiles, String destinationLocation) {
         this.folder = folder;
         this.photoSubFolders = photoSubFolders;
@@ -177,8 +179,16 @@ public class PhotoFolder {
 
     private void deletePreExistingRevisedPhotoFolders() {
         for (FileCategory fileCategory : FileCategory.values()) {
-            String revisedFolderName = destinationLocation.concat(REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName()));
+            String revisedFolderName = destinationLocation.concat(SLASH_DELIMITER).concat(REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName()));
             deleteFolderStructure(revisedFolderName);
+        }
+    }
+
+    private void processFileCategoriesForRetention() {
+        for (FileCategory fileCategory : FileCategory.values()) {
+            if (fileCategory.isRetainFile()) {
+                processPhotoSubFolderForFileCategory(fileCategory);
+            }
         }
     }
 
@@ -200,14 +210,6 @@ public class PhotoFolder {
         }
     }
 
-    private void processFileCategoriesForRetention() {
-        for (FileCategory fileCategory : FileCategory.values()) {
-            if (fileCategory.isRetainFile()) {
-                processPhotoSubFolderForFileCategory(fileCategory);
-            }
-        }
-    }
-
     private void processPhotoSubFolderForFileCategory(FileCategory fileCategory) {
         for (PhotoSubFolder photoSubFolder : photoSubFolders) {
             if (photoSubFolder.getCountOfFilesInFileCategory().containsKey(fileCategory)) {
@@ -220,7 +222,7 @@ public class PhotoFolder {
 
     private void processPhotoSubFolderWithEvidenceOfThisFileCategory(FileCategory fileCategory, PhotoSubFolder photoSubFolder) {
 
-        String revisedFolderName = destinationLocation.concat(REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName()));
+        String revisedFolderName = destinationLocation.concat(SLASH_DELIMITER).concat(REVISED_FOLDER_NAME_TEMPLATE.replaceFirst("XXXXX", fileCategory.getLibraryName()));
 
         String revisedSubFolderName;
         String revisedSubFolderNameWithoutCount;
@@ -265,26 +267,6 @@ public class PhotoFolder {
                 + getSubjectText(subFolderName);
     }
 
-    private String getCenturyAndYear(String subFolderName) {
-        return subFolderName.substring(0, 4);
-    }
-
-    private String getMonth(String subFolderName) {
-        return subFolderName.substring(5, 7);
-    }
-
-    private String getDay(String subFolderName) {
-        return subFolderName.substring(8, 10);
-    }
-
-    private String getYear(String subFolderName) {
-        return subFolderName.substring(2, 4);
-    }
-
-    private String getSubjectText(String subFolderName) {
-        return subFolderName.substring(21);
-    }
-
     private void createRevisedFolder(String revisedFolderName) {
         File folder = new File(revisedFolderName);
         if (!folder.exists()) {
@@ -326,6 +308,26 @@ public class PhotoFolder {
         }
     }
 
+    private String getCenturyAndYear(String subFolderName) {
+        return subFolderName.substring(0, 4);
+    }
+
+    private String getMonth(String subFolderName) {
+        return subFolderName.substring(5, 7);
+    }
+
+    private String getDay(String subFolderName) {
+        return subFolderName.substring(8, 10);
+    }
+
+    private String getYear(String subFolderName) {
+        return subFolderName.substring(2, 4);
+    }
+
+    private String getSubjectText(String subFolderName) {
+        return subFolderName.substring(21);
+    }
+
     private String formatRevisedFilename(String revisedSubFolderNameWithoutCount, String filename, int fileSequenceNumber, boolean renamingOn) {
         if (!renamingOn) {
             return filename;
@@ -333,6 +335,14 @@ public class PhotoFolder {
         return renamePhotoFile(revisedSubFolderNameWithoutCount,
                 filename,
                 fileSequenceNumber);
+    }
+
+    private void copyFileToRevisedSubFolder(File photoFile, File newFile) {
+        try {
+            Files.copy(photoFile.toPath(), newFile.toPath(), REPLACE_EXISTING);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private String renamePhotoFile(String revisedSubFolderName, String filename, int newSequenceNumber) {
@@ -368,14 +378,6 @@ public class PhotoFolder {
 
     private String getFileExtensionFromFilename(String filename) {
         return filename.substring(filename.indexOf(FULL_STOP));
-    }
-
-    private void copyFileToRevisedSubFolder(File photoFile, File newFile) {
-        try {
-            Files.copy(photoFile.toPath(), newFile.toPath(), REPLACE_EXISTING);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     @Override

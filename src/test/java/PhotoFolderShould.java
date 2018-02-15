@@ -6,12 +6,7 @@ import classes.PhotoFolder;
 import classes.PhotoSubFolder;
 import enums.FileCategory;
 import enums.FileType;
-import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,29 +18,42 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class PhotoFolderShould {
+    private static final String SLASH_DELIMITER = Character.toString(File.separatorChar);
 
     @Test(expected = RuntimeException.class)
     public void
     generate_the_corresponding_output_files() {
-        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION);
+        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION, false);
         photoFolder.generateRevisedPhotoSubFolders();
         File library = new File(TestConstants.DESTINATION_LOCATION);
         File document_1 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("/Family Document Library - Revised Folders")
-                .concat("/2001-01-01 Jan01 {2} Description")
-                .concat("/Document_1.txt"));
+                .concat(SLASH_DELIMITER)
+                .concat("Family Document Library - Revised Folders")
+                .concat(SLASH_DELIMITER)
+                .concat("2001-01-01 Jan01 {2} Description")
+                .concat(SLASH_DELIMITER)
+                .concat("Document_1.txt"));
         File document_2 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("/Family Document Library - Revised Folders")
-                .concat("/2001-01-01 Jan01 {2} Description")
-                .concat("/Document_2.txt"));
+                .concat(SLASH_DELIMITER)
+                .concat("Family Document Library - Revised Folders")
+                .concat(SLASH_DELIMITER)
+                .concat("2001-01-01 Jan01 {2} Description")
+                .concat(SLASH_DELIMITER)
+                .concat("Document_2.txt"));
         File photo_1 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("/Family Photo Library - Revised Folders")
-                .concat("/2001-01-01 Jan01 {1} Description")
-                .concat("/2001-01-01 Jan01 #001 Description [Amy on trampoline].jpg"));
+                .concat(SLASH_DELIMITER)
+                .concat("Family Photo Library - Revised Folders")
+                .concat(SLASH_DELIMITER)
+                .concat("2001-01-01 Jan01 {1} Description")
+                .concat(SLASH_DELIMITER)
+                .concat("2001-01-01 Jan01 #001 Description [Amy on trampoline].jpg"));
         File video_1 = new File(TestConstants.DESTINATION_LOCATION
-                .concat("/Family Video Library - Revised Folders")
-                .concat("/2001-01-01 Jan01 {1} Description")
-                .concat("/2001-01-01 Jan01 #001 Description.MOV"));
+                .concat(SLASH_DELIMITER)
+                .concat("Family Video Library - Revised Folders")
+                .concat(SLASH_DELIMITER)
+                .concat("2001-01-01 Jan01 {1} Description")
+                .concat(SLASH_DELIMITER)
+                .concat("2001-01-01 Jan01 #001 Description.MOV"));
         int countOfDirectories = 0;
         for (String directoryName : library.list()) {
             if (directoryName.matches("Family .* Library - Revised Folders")) countOfDirectories++;
