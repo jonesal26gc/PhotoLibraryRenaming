@@ -15,8 +15,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PhotoFolder {
     public static final String NEW_LINE = "\n";
-    public static final String REVISED_FOLDER_NAME_TEMPLATE = "\\Family XXXXX Library - Revised Folders";
-    private static final String SLASH_DELIMITER = "\\";
+    public static final String REVISED_FOLDER_NAME_TEMPLATE = "/Family XXXXX Library - Revised Folders";
+    private static final String SLASH_DELIMITER = "/";
     private static final String DASH = "-";
     private static final String SPACE = " ";
     private static final String FILE_COUNT_TEMPLATE = "{fileCount}";
@@ -31,7 +31,7 @@ public class PhotoFolder {
     private int countOfDuplicatePhotoFiles = 0;
     private String destinationLocation;
 
-    public PhotoFolder(File folder, String destinationLocation) {
+    public PhotoFolder(File folder, String destinationLocation, boolean ignoreErrors) {
         this.folder = folder;
         this.destinationLocation = destinationLocation;
 
@@ -48,9 +48,11 @@ public class PhotoFolder {
         }
         displayFolderAndSubFolderSummary();
         checkForDuplicatedPhotoFilesAcrossAllSubFolders();
-        if (countOfMisplacedFiles > 0 | countOfMisplacedSubFolders > 0) {
+        if (countOfMisplacedFiles > 0 || countOfMisplacedSubFolders > 0) {
             sleepForAMoment();
-            throw new RuntimeException("* Error * Run aborted due to previous exceptions.");
+            if (!ignoreErrors) {
+                throw new RuntimeException("* Error * Run aborted due to previous exception(s).");
+            }
         }
 
     }

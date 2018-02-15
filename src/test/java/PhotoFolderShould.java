@@ -6,12 +6,7 @@ import classes.PhotoFolder;
 import classes.PhotoSubFolder;
 import enums.FileCategory;
 import enums.FileType;
-import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,7 +22,7 @@ public class PhotoFolderShould {
     @Test(expected = RuntimeException.class)
     public void
     generate_the_corresponding_output_files() {
-        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION);
+        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION, false);
         photoFolder.generateRevisedPhotoSubFolders();
         File library = new File(TestConstants.DESTINATION_LOCATION);
         File document_1 = new File(TestConstants.DESTINATION_LOCATION
