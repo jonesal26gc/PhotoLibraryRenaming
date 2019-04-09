@@ -1,7 +1,10 @@
 package classes;
 
+import java.io.File;
+
 public class TestConstants {
-    public static final String REPOSITORY_LOCATION_PREFIX = "/Users/xm39";
+
+    public static final String REPOSITORY_LOCATION_PREFIX = "c:/Users/tonyj";
     public static final String TEST_ORIGINAL_LIBRARY = REPOSITORY_LOCATION_PREFIX.concat("/Projects/PhotoLibraryRenaming/src/test/data/Original Library");
     public static final String TEST_ORIGINAL_SUBFOLDER = TEST_ORIGINAL_LIBRARY + "/2001-01-01 Jan \'01 - Description";
     public static final String TEST_ORIGINAL_DOCUMENT_1 = TEST_ORIGINAL_SUBFOLDER + "/Document_1.txt";
@@ -19,4 +22,14 @@ public class TestConstants {
 
     public static final String DESTINATION_LOCATION = REPOSITORY_LOCATION_PREFIX.concat("/Projects/PhotoLibraryRenaming/src/test/data");
 
+    public static String separatorsToSystem(String path) {
+        if (path == null) return null;
+        if (File.separatorChar == '\\') {
+            // From Windows to Linux/Mac
+            return path.replace('/', File.separatorChar);
+        } else {
+            // From Linux/Mac to Windows
+            return path.replace('\\', File.separatorChar);
+        }
+    }
 }

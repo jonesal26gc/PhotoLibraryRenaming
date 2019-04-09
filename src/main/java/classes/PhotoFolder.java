@@ -59,7 +59,7 @@ public class PhotoFolder {
 
     public void checkThatItIsFolder(File folder) {
         if (!folder.isDirectory()) {
-            throw new RuntimeException("Primary Photo Library '" + folder.getPath() + "'is not a folder");
+            throw new RuntimeException("Primary Photo Library '" + folder.getPath() + "' is not a folder");
         }
     }
 
@@ -68,6 +68,7 @@ public class PhotoFolder {
         for (File subFolder : subFolders) {
             if (subFolder.isDirectory()) {
                 photoSubFolders.add(new PhotoSubFolder(subFolder));
+                System.out.println(subFolder.getPath());
             } else {
                 System.out.println("* Warning - Non Sub-folder '" + subFolder.getName() + "' encountered.");
                 countOfMisplacedFiles++;

@@ -3,22 +3,30 @@ package enums;
 import enums.FileType;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+
 public class FileTypeTest {
 
     @Test
     public void
-    should_encounter_varying_fileTypes() {
-
+    should_encounter_each_fileType() {
         FileType ft;
+
         ft = FileType.findFileTypeFromFilename("xxxx.jpg");
-        System.out.println(ft.toString());
+        assertThat(ft.getFileCategory(), is(FileCategory.PHOTO));
+
         ft = FileType.findFileTypeFromFilename("xxxx.mov");
-        System.out.println(ft.toString());
+        assertThat(ft.getFileCategory(), is(FileCategory.VIDEO));
+
         ft = FileType.findFileTypeFromFilename("xxxx.doc");
-        System.out.println(ft.toString());
+        assertThat(ft.getFileCategory(), is(FileCategory.DOCUMENT));
+
         ft = FileType.findFileTypeFromFilename("xxxx.txt");
-        System.out.println(ft.toString());
+        assertThat(ft.getFileCategory(), is(FileCategory.DOCUMENT));
+
         ft = FileType.findFileTypeFromFilename("xxxx.cbl");
-        System.out.println(ft.toString());
+        assertThat(ft.getFileCategory(), is(FileCategory.RUBBISH));
     }
 }

@@ -22,10 +22,12 @@ import static org.junit.Assert.assertTrue;
 public class PhotoFolderTest {
     private static final String SLASH_DELIMITER = Character.toString(File.separatorChar);
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void
     should_generate_the_corresponding_output_files() {
-        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION, false);
+        PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY),
+                TestConstants.DESTINATION_LOCATION,
+                true);
         photoFolder.generateRevisedPhotoSubFolders();
         File library = new File(TestConstants.DESTINATION_LOCATION);
         File document_1 = new File(TestConstants.DESTINATION_LOCATION
@@ -60,7 +62,7 @@ public class PhotoFolderTest {
         for (String directoryName : library.list()) {
             if (directoryName.matches("Family .* Library - Revised Folders")) countOfDirectories++;
         }
-        assertThat(countOfDirectories,is(3));
+        assertThat(countOfDirectories, is(3));
         assertTrue(document_1.exists());
         assertTrue(document_2.exists());
         assertTrue(photo_1.exists());
