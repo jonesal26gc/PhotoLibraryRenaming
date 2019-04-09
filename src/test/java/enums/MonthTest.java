@@ -1,14 +1,16 @@
+package enums;
+
 import enums.Month;
 import org.junit.Test;
 
 /**
  * Created by xm39 on 06/01/2017.
  */
-public class MonthShould {
+public class MonthTest {
 
     @Test
     public void
-    display_month_names() {
+    should_display_month_names() {
         System.out.println(Month.listMonths());
     }
 

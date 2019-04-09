@@ -1,3 +1,5 @@
+package classes;
+
 import classes.PhotoFile;
 import enums.FileType;
 import org.junit.Test;
@@ -5,11 +7,11 @@ import java.io.File;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class PhotoFileShould {
+public class PhotoFileTest {
 
     @Test
     public void
-    perform_checksum(){
+    should_perform_checksum(){
         File document = new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1);
         System.out.println(document.getPath());
         PhotoFile photoFile = new PhotoFile(document);

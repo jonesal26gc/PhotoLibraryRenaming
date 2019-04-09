@@ -1,3 +1,5 @@
+package classes;
+
 import builders.PhotoFileBuilder;
 import builders.PhotoFolderBuilder;
 import builders.PhotoSubFolderBuilder;
@@ -17,12 +19,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class PhotoFolderShould {
+public class PhotoFolderTest {
     private static final String SLASH_DELIMITER = Character.toString(File.separatorChar);
 
     @Test(expected = RuntimeException.class)
     public void
-    generate_the_corresponding_output_files() {
+    should_generate_the_corresponding_output_files() {
         PhotoFolder photoFolder = new PhotoFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY), TestConstants.DESTINATION_LOCATION, false);
         photoFolder.generateRevisedPhotoSubFolders();
         File library = new File(TestConstants.DESTINATION_LOCATION);
@@ -64,26 +66,26 @@ public class PhotoFolderShould {
         assertTrue(photo_1.exists());
         assertTrue(video_1.exists());
         // compare the original and new files for identical contents??
-        //assertEquals(FileUtils.readLines(new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1).getPath(), FileUtils.readLines(output));
+        //assertEquals(FileUtils.readLines(new File(classes.TestConstants.TEST_ORIGINAL_DOCUMENT_1).getPath(), FileUtils.readLines(output));
     }
 
     @Test
     public void
-    check_that_its_a_folder() {
+    should_check_that_its_a_folder() {
         PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().build();
         photoFolder.checkThatItIsFolder(new File(TestConstants.TEST_ORIGINAL_LIBRARY));
     }
 
     @Test(expected = RuntimeException.class)
     public void
-    check_when_its_not_a_folder() {
+    should_check_when_its_not_a_folder() {
         PhotoFolder photoFolder = PhotoFolderBuilder.aPhotoFolder().build();
         photoFolder.checkThatItIsFolder(new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1));
     }
 
     @Test
     public void
-    provides_totals_by_fileType() {
+    should_provide_totals_by_fileType() {
         // given
         PhotoFile photoFile1 = PhotoFileBuilder.aPhotoFile().withFile(new File("a")).withFileType(FileType.BMP).build();
         PhotoFile photoFile2 = PhotoFileBuilder.aPhotoFile().withFile(new File("b")).withFileType(FileType.DOC).build();
@@ -108,7 +110,7 @@ public class PhotoFolderShould {
 
     @Test
     public void
-    provides_totals_by_fileCategory() {
+    should_provide_totals_by_fileCategory() {
         // given
         HashMap<FileCategory, Integer> fileCategoryTable = new HashMap<FileCategory, Integer>();
         fileCategoryTable.put(FileCategory.DOCUMENT, 1);

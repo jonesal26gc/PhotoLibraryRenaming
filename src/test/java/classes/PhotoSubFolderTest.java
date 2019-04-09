@@ -1,6 +1,8 @@
-import classes.PhotoSubFolder;
+package classes;
+
 import enums.FileCategory;
 import enums.FileType;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.io.File;
@@ -10,64 +12,64 @@ import java.util.Map;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class PhotoSubFolderShould {
+public class PhotoSubFolderTest {
 
     @Test
     public void
-    identify_3_files_of_an_original_format_subfolder() {
+    should_identify_3_files_of_an_original_format_subfolder() {
         File file = new File(TestConstants.TEST_ORIGINAL_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertTrue(photoSubFolder.isOriginalSubFolderNameFormat());
         assertFalse(photoSubFolder.isNewSubFolderNameFormat());
         assertThat(photoSubFolder.getPhotoFiles().size(), is(5));
-        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(), is(TestConstants.TEST_ORIGINAL_DOCUMENT_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(), Is.is(TestConstants.TEST_ORIGINAL_DOCUMENT_1));
         assertThat(photoSubFolder.getPhotoFiles().get(0).getFileType(), is(FileType.TXT));
         System.out.println(photoSubFolder.getPhotoFiles().get(0).getFile().getPath());
-        assertThat(photoSubFolder.getPhotoFiles().get(1).getFile().getPath(), is(TestConstants.TEST_ORIGINAL_DOCUMENT_2));
+        assertThat(photoSubFolder.getPhotoFiles().get(1).getFile().getPath(), Is.is(TestConstants.TEST_ORIGINAL_DOCUMENT_2));
         assertThat(photoSubFolder.getPhotoFiles().get(1).getFileType(), is(FileType.TXT));
         System.out.println(photoSubFolder.getPhotoFiles().get(1).getFile().getPath());
 
-        assertThat(photoSubFolder.getPhotoFiles().get(2).getFile().getPath(), is(TestConstants.TEST_ORIGINAL_VIDEO_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(2).getFile().getPath(), Is.is(TestConstants.TEST_ORIGINAL_VIDEO_1));
         assertThat(photoSubFolder.getPhotoFiles().get(2).getFileType(), is(FileType.MOV));
         System.out.println(photoSubFolder.getPhotoFiles().get(2).getFile().getPath());
-        assertThat(photoSubFolder.getPhotoFiles().get(3).getFile().getPath(), is(TestConstants.TEST_ORIGINAL_VIDEO_2));
+        assertThat(photoSubFolder.getPhotoFiles().get(3).getFile().getPath(), Is.is(TestConstants.TEST_ORIGINAL_VIDEO_2));
         assertThat(photoSubFolder.getPhotoFiles().get(3).getFileType(), is(FileType.MOV));
         System.out.println(photoSubFolder.getPhotoFiles().get(3).getFile().getPath());
 
-        assertThat(photoSubFolder.getPhotoFiles().get(4).getFile().getPath(), is(TestConstants.TEST_ORIGINAL_PICTURE_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(4).getFile().getPath(), Is.is(TestConstants.TEST_ORIGINAL_PICTURE_1));
         assertThat(photoSubFolder.getPhotoFiles().get(4).getFileType(), is(FileType.JPG));
         System.out.println(photoSubFolder.getPhotoFiles().get(4).getFile().getPath());
     }
 
     @Test
     public void
-    identify_3_files_of_a_new_format_subfolder() {
+    should_identify_3_files_of_a_new_format_subfolder() {
         File file = new File(TestConstants.TEST_NEW_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertFalse(photoSubFolder.isOriginalSubFolderNameFormat());
         assertTrue(photoSubFolder.isNewSubFolderNameFormat());
         assertThat(photoSubFolder.getPhotoFiles().size(), is(3));
-        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(), is(TestConstants.TEST_NEW_DOCUMENT_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(0).getFile().getPath(), Is.is(TestConstants.TEST_NEW_DOCUMENT_1));
         assertThat(photoSubFolder.getPhotoFiles().get(0).getFileType(), is(FileType.TXT));
         System.out.println(photoSubFolder.getPhotoFiles().get(0).getFile().getPath());
-        assertThat(photoSubFolder.getPhotoFiles().get(1).getFile().getPath(), is(TestConstants.TEST_NEW_DOCUMENT_2));
+        assertThat(photoSubFolder.getPhotoFiles().get(1).getFile().getPath(), Is.is(TestConstants.TEST_NEW_DOCUMENT_2));
         assertThat(photoSubFolder.getPhotoFiles().get(1).getFileType(), is(FileType.TXT));
         System.out.println(photoSubFolder.getPhotoFiles().get(1).getFile().getPath());
-        assertThat(photoSubFolder.getPhotoFiles().get(2).getFile().getPath(), is(TestConstants.TEST_NEW_PICTURE_1));
+        assertThat(photoSubFolder.getPhotoFiles().get(2).getFile().getPath(), Is.is(TestConstants.TEST_NEW_PICTURE_1));
         assertThat(photoSubFolder.getPhotoFiles().get(2).getFileType(), is(FileType.JPG));
         System.out.println(photoSubFolder.getPhotoFiles().get(2).getFile().getPath());
     }
 
     @Test(expected = RuntimeException.class)
     public void
-    throw_exception_when_file_rather_than_folder() {
+    should_throw_exception_when_file_rather_than_folder() {
         File file = new File(TestConstants.TEST_ORIGINAL_DOCUMENT_1);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
     }
 
     @Test
     public void
-    ignore_specific_files_when_requested() {
+    should_ignore_specific_files_when_requested() {
         File file = new File(TestConstants.TEST_ORIGINAL_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertThat(photoSubFolder.getPhotoFiles().size(), is(5));
@@ -102,7 +104,7 @@ public class PhotoSubFolderShould {
 
     @Test
     public void
-    check_for_misplaced_SubFolder() {
+    should_check_for_misplaced_SubFolder() {
         File file = new File(TestConstants.TEST_MISPLACED_SUBFOLDER);
         PhotoSubFolder photoSubFolder = new PhotoSubFolder(file);
         assertThat(photoSubFolder.getPhotoFiles().size(), is(1));
